@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="DesignSurface">
+    <option name="filePathToZoomLevelMap">
+      <map>
+        <entry key="..\:/Android Studio 2020/Working Projects/app/src/main/res/drawable-v24/background_line.xml" value="0.26614583333333336" />
+        <entry key="..\:/Android Studio 2020/Working Projects/app/src/main/res/layout/activity_main.xml" value="0.1793478260869565" />
+        <entry key="..\:/Android Studio 2020/Working Projects/app/src/main/res/layout/activity_sign_in.xml" value="0.1793478260869565" />
+        <entry key="..\:/Android Studio 2020/Working Projects/app/src/main/res/layout/activity_sign_in2.xml" value="0.1793478260869565" />
+        <entry key="..\:/Android Studio 2020/Working Projects/app/src/main/res/layout/activity_sign_up.xml" value="0.11302083333333333" />
+        <entry key="..\:/Android Studio 2020/Working Projects/food Delivery/app/src/main/res/drawable/ic_add_foreground.xml" value="0.26614583333333336" />
+        <entry key="..\:/Android Studio 2020/Working Projects/food Delivery/app/src/main/res/drawable/ic_delete_background.xml" value="0.26614583333333336" />
+        <entry key="..\:/Android Studio 2020/Working Projects/food Delivery/app/src/main/res/drawable/ic_delete_foreground.xml" value="0.26614583333333336" />
+        <entry key="..\:/Android Studio 2020/Working Projects/food Delivery/app/src/main/res/drawable/image_name.xml" value="0.26614583333333336" />
+        <entry key="..\:/Android Studio 2020/Working Projects/food Delivery/app/src/main/res/layout/activity_add_new_order.xml" value="0.16666666666666666" />
+        <entry key="..\:/Android Studio 2020/Working Projects/food Delivery/app/src/main/res/layout/activity_customer_home_page.xml" value="0.19791666666666666" />
+        <entry key="..\:/Android Studio 2020/Working Projects/food Delivery/app/src/main/res/layout/activity_main.xml" value="0.16666666666666666" />
+        <entry key="..\:/Android Studio 2020/Working Projects/food Delivery/app/src/main/res/layout/activity_restaurant_items.xml" value="0.1" />
+        <entry key="..\:/Android Studio 2020/Working Projects/food Delivery/app/src/main/res/layout/activity_restraunt_home_page.xml" value="0.176" />
+        <entry key="..\:/Android Studio 2020/Working Projects/food Delivery/app/src/main/res/layout/activity_sign_in.xml" value="0.264" />
+        <entry key="..\:/Android Studio 2020/Working Projects/food Delivery/app/src/main/res/layout/activity_sign_up.xml" value="0.25412541254125415" />
+        <entry key="..\:/Android Studio 2020/Working Projects/food Delivery/app/src/main/res/layout/activity_view_order.xml" value="0.19791666666666666" />
+        <entry key="..\:/Android Studio 2020/Working Projects/food Delivery/app/src/main/res/layout/exampleitem.xml" value="0.136" />
+        <entry key="..\:/Android Studio 2020/Working Projects/food Delivery/app/src/main/res/layout/exampleitemCustomer.xml" value="0.2" />
+        <entry key="..\:/Android Studio 2020/Working Projects/food Delivery/app/src/main/res/layout/exampleitem_list_customer.xml" value="0.264" />
+        <entry key="..\:/Android Studio 2020/Working Projects/food Delivery/app/src/main/res/layout/exampleitem_list_customer_cart.xml" value="0.4" />
+        <entry key="..\:/Android Studio 2020/Working Projects/food Delivery/app/src/main/res/layout/exampleitemcustomer.xml" value="0.16893115942028986" />
+        <entry key="..\:/Android Studio 2020/Working Projects/food Delivery/app/src/main/res/layout/list_item.xml" value="0.19791666666666666" />
+        <entry key="..\:/Android Studio 2020/Working Projects/food Delivery/app/src/main/res/layout/pop_up_window.xml" value="0.16666666666666666" />
+      </map>
+    </option>
+  </component>
+  <component name="ProjectRootManager" version="2" languageLevel="JDK_11" default="true" project-jdk-name="Android Studio default JDK" project-jdk-type="JavaSDK">
+    <output url="file://$PROJECT_DIR$/build/classes" />
+  </component>
+  <component name="ProjectType">
+    <option name="id" value="Android" />
+  </component>
+</project>

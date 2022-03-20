@@ -1,0 +1,207 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    tools:context=".SignInActivity">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical">
+
+<!--        <LinearLayout-->
+<!--            android:layout_width="match_parent"-->
+<!--            android:layout_height="wrap_content"-->
+<!--            android:orientation="vertical">-->
+<!--            <TextView-->
+<!--                android:layout_width="match_parent"-->
+<!--                android:layout_height="wrap_content"-->
+<!--                android:layout_marginLeft="25dp"-->
+<!--                android:textStyle="bold"-->
+<!--                android:textSize="18dp"-->
+<!--                android:layout_marginBottom="5dp"-->
+<!--                android:text="Mobile Number"/>-->
+<!--            <EditText-->
+<!--                android:id="@+id/mobileSignIn"-->
+<!--                android:background="@drawable/background_line"-->
+<!--                android:layout_width="match_parent"-->
+<!--                android:layout_height="wrap_content"-->
+<!--                android:layout_marginLeft="15dp"-->
+<!--                android:layout_marginRight="15dp"-->
+<!--                android:layout_gravity="center"-->
+<!--                android:gravity="center"-->
+<!--                android:ems="10"-->
+<!--                android:inputType="textPersonName"-->
+<!--                android:hint="Please Enter your Mobile Number"-->
+<!--                />-->
+<!--        </LinearLayout>-->
+        <com.google.android.material.textfield.TextInputLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="Enter Mobile Number"
+            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.Dense"
+            android:layout_marginLeft="20dp"
+            android:layout_marginTop="10dp"
+            android:layout_marginRight="20dp"
+            android:layout_marginBottom="10dp">
+
+        <com.google.android.material.textfield.TextInputEditText
+            android:id="@+id/mobileSignIn"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:maxLength="10"
+            android:textSize="18dp"
+            android:singleLine="true"
+            android:phoneNumber="true"
+            />
+        </com.google.android.material.textfield.TextInputLayout>
+
+<!--        <LinearLayout-->
+<!--            android:layout_width="match_parent"-->
+<!--            android:layout_height="wrap_content"-->
+<!--            android:orientation="vertical">-->
+<!--            <TextView-->
+<!--                android:layout_width="match_parent"-->
+<!--                android:layout_height="wrap_content"-->
+<!--                android:layout_marginTop="5dp"-->
+<!--                android:layout_marginLeft="25dp"-->
+<!--                android:textStyle="bold"-->
+<!--                android:textSize="18dp"-->
+<!--                android:layout_marginBottom="5dp"-->
+<!--                android:text="Password"/>-->
+
+<!--            <EditText-->
+<!--               -->
+<!--                android:layout_width="match_parent"-->
+<!--                android:layout_height="wrap_content"-->
+<!--                android:ems="10"-->
+<!--                android:layout_gravity="center"-->
+<!--                android:gravity="center"-->
+<!--                android:layout_marginLeft="15dp"-->
+<!--                android:layout_marginRight="15dp"-->
+<!--                android:background="@drawable/background_line"-->
+<!--                android:hint="Enter your Password"-->
+<!--                android:inputType="textPassword"-->
+<!--                />-->
+
+<!--        </LinearLayout>-->
+        <com.google.android.material.textfield.TextInputLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="Enter Password"
+            android:layout_marginLeft="20dp"
+            android:layout_marginRight="20dp"
+            android:layout_marginBottom="10dp"
+            app:passwordToggleEnabled="true"
+            app:passwordToggleContentDescription="Hide/Show Password"
+            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.Dense"
+            >
+
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/passwordSignIn"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:password="true"
+                android:textSize="18dp"
+                android:singleLine="true"
+                />
+
+
+        </com.google.android.material.textfield.TextInputLayout>
+
+        <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/signInSpinnerLayout"
+            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.ExposedDropdownMenu"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="20dp"
+            android:layout_marginRight="20dp"
+            android:layout_marginBottom="10dp"
+            android:hint="User Type">
+
+            <androidx.appcompat.widget.AppCompatAutoCompleteTextView
+                android:id="@+id/spinnerTypeSignIn"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:editable="false"
+                android:clickable="true"
+                android:textSize="18dp"
+                android:singleLine="true"
+                tools:ignore="KeyboardInaccessibleWidget" />
+        </com.google.android.material.textfield.TextInputLayout>
+
+<!--        <LinearLayout-->
+<!--            android:layout_width="match_parent"-->
+<!--            android:layout_height="wrap_content"-->
+<!--            android:orientation="vertical">-->
+<!--            <TextView-->
+<!--                android:layout_width="match_parent"-->
+<!--                android:layout_height="wrap_content"-->
+<!--                android:layout_marginTop="5dp"-->
+<!--                android:layout_marginLeft="25dp"-->
+<!--                android:textStyle="bold"-->
+<!--                android:textSize="18dp"-->
+<!--                android:layout_marginBottom="5dp"-->
+<!--                android:text="User Tpe"/>-->
+
+<!--            <Spinner-->
+<!--                android:id="@+id/spinnerTypeSignIn"-->
+<!--                android:layout_marginLeft="20dp"-->
+<!--                android:layout_marginRight="20dp"-->
+<!--                android:layout_marginTop="10dp"-->
+<!--                android:layout_marginBottom="10dp"-->
+<!--                android:layout_gravity="center"-->
+<!--                android:background="@drawable/background_line"-->
+<!--                android:layout_margin="5dp"-->
+<!--                android:layout_width="match_parent"-->
+<!--                android:entries="@array/type"-->
+<!--                android:layout_height="wrap_content"-->
+<!--                />-->
+
+<!--        </LinearLayout>-->
+
+        <Button
+            android:id="@+id/login"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textSize="22dp"
+            android:background="@drawable/background_button"
+            android:layout_margin="15dp"
+            android:text="Login"
+            />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="20dp"
+                android:layout_marginRight="20dp"
+                android:layout_gravity="center"
+                android:gravity="center"
+                android:textSize="18dp"
+                android:textStyle="bold"
+                android:text="New User Click On SignUp "/>
+
+            <Button
+                android:id="@+id/btnSignUpCustomer"
+                android:layout_marginLeft="15dp"
+                android:layout_marginRight="15dp"
+                android:layout_marginBottom="20dp"
+                android:layout_width="match_parent"
+                android:background="@drawable/background_button"
+                android:textSize="22dp"
+                android:layout_height="wrap_content"
+                android:text="SignUp"
+                />
+
+        </LinearLayout>
+
+
+    </LinearLayout>
+</ScrollView>
