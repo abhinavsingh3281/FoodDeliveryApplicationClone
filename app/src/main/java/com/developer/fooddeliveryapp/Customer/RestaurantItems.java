@@ -12,6 +12,8 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageButton;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.PopupWindow;
 import android.widget.Toast;
@@ -20,9 +22,12 @@ import com.developer.fooddeliveryapp.Customer.ItemsAdapter.ExampleAdapterListCus
 import com.developer.fooddeliveryapp.Customer.ItemsAdapter.ExampleItemCustomerList;
 import com.developer.fooddeliveryapp.MainActivity;
 import com.developer.fooddeliveryapp.R;
+import com.developer.fooddeliveryapp.SessionManager;
 import com.developer.fooddeliveryapp.SignInActivity;
 import com.developer.fooddeliveryapp.SignUpActivity;
 import com.developer.fooddeliveryapp.User;
+import com.google.android.material.button.MaterialButton;
+import com.google.android.material.textfield.TextInputEditText;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -31,6 +36,7 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 
 public class RestaurantItems extends AppCompatActivity {
     private RecyclerView mRecyclerView;
@@ -40,7 +46,9 @@ public class RestaurantItems extends AppCompatActivity {
     String email;
     String password, mobileNo;
 
-    Button order;
+    TextInputEditText address;
+
+    MaterialButton order;
 
     ArrayList<ExampleItemCustomerList> list = new ArrayList<>();
 
@@ -51,6 +59,18 @@ public class RestaurantItems extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_restaurant_items);
         order=findViewById(R.id.btnOrder);
+
+        SessionManager session = new SessionManager(getApplicationContext());
+        HashMap<String, String> user = session.getUserDetails();
+        String userId = user.get("userId").toString();
+        String categoryId = user.get("role").toString();
+        String mobileNo=user.get("mobileNo").toString();
+        String image=user.get("image").toString();
+        String email=user.get("email").toString();
+        String name=user.get("name").toString();
+        String pincode=user.get("pincode").toString();
+        String location=user.get("address").toString();
+
 
         Intent intent=getIntent();
         String mobNo=intent.getStringExtra("mobNo");

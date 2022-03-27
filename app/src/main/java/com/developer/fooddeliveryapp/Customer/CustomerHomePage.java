@@ -1,30 +1,48 @@
 package com.developer.fooddeliveryapp.Customer;
 
 import androidx.annotation.NonNull;
+import androidx.appcompat.app.ActionBarDrawerToggle;
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
+import androidx.core.view.GravityCompat;
+import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.content.DialogInterface;
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.os.Bundle;
+import android.util.Base64;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageView;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.developer.fooddeliveryapp.R;
 import com.developer.fooddeliveryapp.Restraunt.ExampleAdapter;
 import com.developer.fooddeliveryapp.Restraunt.ExampleItem;
+import com.developer.fooddeliveryapp.Restraunt.RestaurantHomePage;
+import com.developer.fooddeliveryapp.SessionManager;
+import com.developer.fooddeliveryapp.SignInActivity;
+import com.google.android.material.navigation.NavigationView;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+import com.makeramen.roundedimageview.RoundedImageView;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 
-public class CustomerHomePage extends AppCompatActivity {
+public class CustomerHomePage extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener{
 
     private RecyclerView mRecyclerView;
     private ExampleAdapterCustomer mAdapter;
@@ -36,10 +54,13 @@ public class CustomerHomePage extends AppCompatActivity {
     DatabaseReference getUserDetails;
     String email;
     String password, mobileNo;
+    String uid;
 
     ArrayList<ExampleItemCustomer> list = new ArrayList<>();
 
     DatabaseReference reference;
+
+    DrawerLayout drawerLayout;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -49,43 +70,123 @@ public class CustomerHomePage extends AppCompatActivity {
         pinCode=findViewById(R.id.customerPinCode);
         checkPin=findViewById(R.id.btnCustomerPinCode);
 
-        String uid = FirebaseAuth.getInstance().getCurrentUser().getUid();
-        getUserDetails = FirebaseDatabase.getInstance().getReference("users").child("all").child("uid").child(uid);
+        pinCode.setText("125005");
 
-        getUserDetails.addListenerForSingleValueEvent(new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot snapshot) {
-                email = snapshot.child("email").getValue(String.class);
-                password = snapshot.child("password").getValue(String.class);
-                mobileNo = snapshot.child("mobileNo").getValue(String.class);
-            }
+        uid = FirebaseAuth.getInstance().getCurrentUser().getUid();
 
-            @Override
-            public void onCancelled(@NonNull DatabaseError error) {
+        SessionManager session = new SessionManager(getApplicationContext());
+        HashMap<String, String> user = session.getUserDetails();
+        String userId = user.get("userId").toString();
+        String categoryId = user.get("role").toString();
+        String mobileNo=user.get("mobileNo").toString();
+        String image=user.get("image").toString();
+        String email=user.get("email").toString();
+        String name=user.get("name").toString();
 
-            }
-        });
+        byte [] bytes= Base64.decode(image,Base64.DEFAULT);
+        Bitmap bitmap= BitmapFactory.decodeByteArray(bytes,0, bytes.length);
+
+
+        Toolbar toolbar = findViewById(R.id.toolbar_customer);
+        setSupportActionBar(toolbar);
+
+        drawerLayout = findViewById(R.id.drawer_layout_customer);
+        NavigationView navigationView = findViewById(R.id.nav_view_customer);
+        navigationView.setNavigationItemSelectedListener(this);
+
+        View headerView = navigationView.getHeaderView(0);
+        TextView navUsername = (TextView) headerView.findViewById(R.id.header_name);
+        TextView navEmail = (TextView) headerView.findViewById(R.id.header_email);
+        RoundedImageView imageView=(RoundedImageView) headerView.findViewById(R.id.header_image);
+        imageView.setImageBitmap(bitmap);
+        navUsername.setText(name);
+        navEmail.setText(email);
+
+
+
+        ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(this, drawerLayout, toolbar,
+                R.string.nav_open, R.string.nav_close);
+        drawerLayout.addDrawerListener(toggle);
+        toggle.syncState();
+//        getUserDetails = FirebaseDatabase.getInstance().getReference("users").child("all").child("uid").child(uid);
+//
+//        getUserDetails.addListenerForSingleValueEvent(new ValueEventListener() {
+//            @Override
+//            public void onDataChange(@NonNull DataSnapshot snapshot) {
+//                email = snapshot.child("email").getValue(String.class);
+//                password = snapshot.child("password").getValue(String.class);
+//                mobileNo = snapshot.child("mobileNo").getValue(String.class);
+//            }
+//
+//            @Override
+//            public void onCancelled(@NonNull DatabaseError error) {
+//
+//            }
+//        });
+
+
         checkPin.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                createExampleList(pinCode.getText().toString());
+                createExampleList(pinCode.getText().toString(),mobileNo);
+
             }
         });
 
     }
 
-    public void createExampleList(String pin) {
+    @Override
+    public boolean onNavigationItemSelected(@NonNull MenuItem item) {
+        switch (item.getItemId()) {
+            case R.id.nav_logout:
+                AlertDialog.Builder builder1 = new AlertDialog.Builder(CustomerHomePage.this);
+                builder1.setMessage("Do you want to Log Out");
+                builder1.setCancelable(true);
 
-        Toast.makeText(getApplicationContext(), "InIt", Toast.LENGTH_SHORT).show();
+                builder1.setPositiveButton(
+                        "OK",
+                        new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog, int id) {
+                                LogOut();
+                            }
+                        });
 
-        Intent intent = getIntent();
-        String mob = intent.getStringExtra("mobileNo");
+                AlertDialog alert11 = builder1.create();
+                alert11.show();
+                break;
+//            case R.id.nav_chat:
+//                getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container,
+//                        new ChatFragment()).commit();
+//                break;
+//            case R.id.nav_profile:
+//                getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container,
+//                        new ProfileFragment()).commit();
+//                break;
+//            case R.id.nav_share:
+//                Toast.makeText(this, "Share", Toast.LENGTH_SHORT).show();
+//                break;
+//            case R.id.nav_send:
+//                Toast.makeText(this, "Send", Toast.LENGTH_SHORT).show();
+//                break;
+        }
 
+        drawerLayout.closeDrawer(GravityCompat.START);
+        return true;
+    }
+
+    private void LogOut() {
+        FirebaseAuth.getInstance().signOut();
+        startActivity(new Intent(this, SignInActivity.class));
+    }
+
+    public void createExampleList(String pin,String mobileNo) {
         DatabaseReference db = FirebaseDatabase.getInstance().getReference("users").child("Restaurant").child("Delivery").child(pin);
 
         mRecyclerView = findViewById(R.id.recyclerViewCustomer);
         mRecyclerView.setHasFixedSize(true);
         mLayoutManager = new LinearLayoutManager(this);
+
+
 
 
         db.addListenerForSingleValueEvent(new ValueEventListener() {
@@ -106,7 +207,7 @@ public class CustomerHomePage extends AppCompatActivity {
                         ExampleItemCustomer exampleItemCustomer=list.get(position);
                         Intent intent1=new Intent(getApplicationContext(),RestaurantItems.class);
                         intent1.putExtra("mobNo",exampleItemCustomer.getMobileNo());
-                        intent1.putExtra("mobileNumberCustomer",mob);
+                        intent1.putExtra("mobileNumberCustomer",mobileNo);
                         startActivity(intent1);
                     }
                 });

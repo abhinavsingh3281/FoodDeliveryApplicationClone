@@ -1,29 +1,35 @@
 package com.developer.fooddeliveryapp.Restraunt;
 
 import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
+import androidx.appcompat.app.ActionBarDrawerToggle;
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
+import androidx.core.view.GravityCompat;
+import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.util.Base64;
+import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
-import android.view.MotionEvent;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
-import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.PopupWindow;
 import android.widget.TextView;
-import android.widget.Toast;
+
 import com.developer.fooddeliveryapp.R;
-import com.developer.fooddeliveryapp.User;
+import com.developer.fooddeliveryapp.SignInActivity;
+import com.google.android.material.navigation.NavigationView;
+import com.google.android.material.textfield.TextInputEditText;
 import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.database.ChildEventListener;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -32,10 +38,8 @@ import com.google.firebase.database.ValueEventListener;
 
 import java.io.ByteArrayOutputStream;
 import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.UUID;
 
-public class RestaurantHomePage extends AppCompatActivity {
+public class RestaurantHomePage extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener{
     private ArrayList<ExampleItem> mExampleList;
 
     private RecyclerView mRecyclerView;
@@ -48,38 +52,98 @@ public class RestaurantHomePage extends AppCompatActivity {
 
     DatabaseReference deleteDatabaseReference;
 
-
-    DatabaseReference getUserDetails;
-    String email;
-    String password,mobileNo;
-
     ArrayList<ExampleItem>list=new ArrayList<>();
 
     DatabaseReference reference;
+    DrawerLayout drawerLayout;
+    public ActionBarDrawerToggle actionBarDrawerToggle;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_restraunt_home_page);
 
-        String uid=FirebaseAuth.getInstance().getCurrentUser().getUid();
-        getUserDetails=FirebaseDatabase.getInstance().getReference("users").child("all").child("uid").child(uid);
+//        drawerLayout = findViewById(R.id.drawer_layout);
+//        actionBarDrawerToggle = new ActionBarDrawerToggle(this, drawerLayout, R.string.nav_open, R.string.nav_close);
+//
+//        // pass the Open and Close toggle for the drawer layout listener
+//        // to toggle the button
+//        drawerLayout.addDrawerListener(actionBarDrawerToggle);
+//        actionBarDrawerToggle.syncState();
+//
+//        // to make the Navigation drawer icon always appear on the action bar
+//        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
-        getUserDetails.addListenerForSingleValueEvent(new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot snapshot) {
-                email= snapshot.child("email").getValue(String.class);
-                password = snapshot.child("password").getValue(String.class);
-                mobileNo=snapshot.child("mobileNo").getValue(String.class);
-            }
+        Toolbar toolbar = findViewById(R.id.toolbar);
+        setSupportActionBar(toolbar);
 
-            @Override
-            public void onCancelled(@NonNull DatabaseError error) {
+        drawerLayout = findViewById(R.id.drawer_layout);
+        NavigationView navigationView = findViewById(R.id.nav_view);
+        navigationView.setNavigationItemSelectedListener(this);
 
-            }
-        });
+        ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(this, drawerLayout, toolbar,
+                R.string.nav_open, R.string.nav_close);
+        drawerLayout.addDrawerListener(toggle);
+        toggle.syncState();
+
         createExampleList();
         setButtons();
+    }
+
+    @Override
+    public boolean onNavigationItemSelected(@NonNull MenuItem item) {
+        switch (item.getItemId()) {
+            case R.id.nav_logout:
+                AlertDialog.Builder builder1 = new AlertDialog.Builder(RestaurantHomePage.this);
+                builder1.setMessage("Do you want to Log Out");
+                builder1.setCancelable(true);
+
+                builder1.setPositiveButton(
+                        "OK",
+                        new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog, int id) {
+                                LogOut();
+                            }
+                        });
+
+                AlertDialog alert11 = builder1.create();
+                alert11.show();
+                break;
+//            case R.id.nav_chat:
+//                getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container,
+//                        new ChatFragment()).commit();
+//                break;
+//            case R.id.nav_profile:
+//                getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container,
+//                        new ProfileFragment()).commit();
+//                break;
+//            case R.id.nav_share:
+//                Toast.makeText(this, "Share", Toast.LENGTH_SHORT).show();
+//                break;
+//            case R.id.nav_send:
+//                Toast.makeText(this, "Send", Toast.LENGTH_SHORT).show();
+//                break;
+        }
+
+        drawerLayout.closeDrawer(GravityCompat.START);
+        return true;
+    }
+//    @Override
+//    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
+//
+//         if (item.getItemId() == R.id.nav_logout) {
+//            Toast.makeText(getApplicationContext(), "Log Out", Toast.LENGTH_SHORT).show();
+//            LogOut();
+//        }
+//        return super.onOptionsItemSelected(item);
+//    }
+
+
+
+    private void LogOut() {
+        FirebaseAuth.getInstance().signOut();
+        startActivity(new Intent(getApplicationContext(), SignInActivity.class));
     }
 
     public void removeItem(int position) {
@@ -91,20 +155,24 @@ public class RestaurantHomePage extends AppCompatActivity {
 
         deleteDatabaseReference = firebaseDatabase.getReference("users").child("Restaurant").child(mob).child("items").child(s);
 
-        deleteDatabaseReference.addValueEventListener(new ValueEventListener() {
+        deleteDatabaseReference.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
-            public void onDataChange(@NonNull DataSnapshot snapshot) {
-                snapshot.getRef().removeValue();
-//                Toast.makeText(getApplicationContext(), msg, Toast.LENGTH_SHORT).show();
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                for (DataSnapshot appleSnapshot: dataSnapshot.getChildren()) {
+                    appleSnapshot.getRef().removeValue();
+
+                }
+
             }
 
             @Override
-            public void onCancelled(@NonNull DatabaseError error) {
-
+            public void onCancelled(DatabaseError databaseError) {
+                Log.e("TAG", "onCancelled", databaseError.toException());
             }
         });
-
+        list.remove(position);
         mAdapter.notifyItemRemoved(position);
+
     }
 
     public void changeItem(int position, String text) {
@@ -113,9 +181,6 @@ public class RestaurantHomePage extends AppCompatActivity {
     }
 
     public void createExampleList() {
-//        mExampleList = new ArrayList<>();
-//        mExampleList.add(new ExampleItem( "Line 1", "Line 2"));
-
         Intent intent=getIntent();
         String mob=intent.getStringExtra("mobileNo");
 
@@ -141,7 +206,7 @@ public class RestaurantHomePage extends AppCompatActivity {
                 mAdapter.setOnItemClickListener(new ExampleAdapter.OnItemClickListener() {
                     @Override
                     public void onItemClick(int position) {
-                        changeItem(position, "Clicked");
+//                        changeItem(position, "Clicked");
                     }
                     @Override
                     public void onDeleteClick(int position) {
@@ -186,7 +251,7 @@ public class RestaurantHomePage extends AppCompatActivity {
         View popupView = inflater.inflate(R.layout.pop_up_window, null);
 
         // create the popup window
-        int width = LinearLayout.LayoutParams.WRAP_CONTENT;
+        int width = LinearLayout.LayoutParams.MATCH_PARENT;
         int height = LinearLayout.LayoutParams.WRAP_CONTENT;
         boolean focusable = true; // lets taps outside the popup also dismiss it
         final PopupWindow popupWindow = new PopupWindow(popupView, width, height, focusable);
@@ -197,8 +262,8 @@ public class RestaurantHomePage extends AppCompatActivity {
 
         // dismiss the popup window when touched
 
-        EditText itemName=popupView.findViewById(R.id.setItemName);
-        EditText itemPrice=popupView.findViewById(R.id.setItemPrice);
+        TextInputEditText itemName=popupView.findViewById(R.id.setItemName);
+        TextInputEditText itemPrice=popupView.findViewById(R.id.setItemPrice);
 
         Button add=popupView.findViewById(R.id.saveItems);
         add.setOnClickListener(new View.OnClickListener() {
@@ -213,8 +278,9 @@ public class RestaurantHomePage extends AppCompatActivity {
                         reference.addListenerForSingleValueEvent(new ValueEventListener() {
                             @Override
                             public void onDataChange(@NonNull DataSnapshot snapshot) {
-//                                createExampleList();
-                                writeItemDetails(itemName.getText().toString(),itemPrice.getText().toString());
+                                ExampleItem item=writeItemDetails(itemName.getText().toString(),itemPrice.getText().toString());
+                                list.add(item);
+                                mAdapter.notifyDataSetChanged();
                             }
 
                             @Override
@@ -226,11 +292,11 @@ public class RestaurantHomePage extends AppCompatActivity {
                     }
                 });
 
-
     }
-    public void writeItemDetails(String itemName,String itemPrice) {
+    public ExampleItem writeItemDetails(String itemName,String itemPrice) {
 
         ExampleItem item = new ExampleItem(R.drawable.ic_launcher_foreground,itemName, itemPrice);
         reference.child("items").child(itemName).setValue(item);
+        return item;
     }
 }

@@ -36,6 +36,7 @@ public class ExampleAdapterListCustomer extends RecyclerView.Adapter<ExampleAdap
         public TextView mTextView1;
         public TextView mTextView2;
         private Button addToCart;
+        private ImageView imageView;
 
 
         public ExampleViewHolderItemsCustomer(View itemView, final OnItemClickListener listener) {
@@ -44,6 +45,7 @@ public class ExampleAdapterListCustomer extends RecyclerView.Adapter<ExampleAdap
             mTextView1 = itemView.findViewById(R.id.textView);
             mTextView2 = itemView.findViewById(R.id.textView2);
             addToCart=itemView.findViewById(R.id.addToCart);
+            imageView=itemView.findViewById(R.id.doneBtnCustomer);
 
 
             addToCart.setOnClickListener(new View.OnClickListener() {
@@ -55,6 +57,7 @@ public class ExampleAdapterListCustomer extends RecyclerView.Adapter<ExampleAdap
                             listener.addToCart(position);
                         }
                         addToCart.setVisibility(View.INVISIBLE);
+                        imageView.setVisibility(View.VISIBLE);
                     }
                 }
             });

@@ -27,17 +27,19 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 
 public class SignInActivity extends AppCompatActivity {
     TextInputEditText mobileNo, PassTB;
     Button LoginB;
     Button signup;
-//    Spinner userType;
+    String role=null;
 
     FirebaseDatabase firebaseDatabase;
     DatabaseReference databaseReference;
 
     DatabaseReference reference;
+    DatabaseReference getReference;
 
     AutoCompleteTextView spinner;
 
@@ -46,9 +48,9 @@ public class SignInActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_sign_in);
 
-            mobileNo = findViewById(R.id.mobileSignIn);
-            PassTB = findViewById(R.id.passwordSignIn);
-            signup=findViewById(R.id.btnSignUpCustomer);
+        mobileNo = findViewById(R.id.mobileSignIn);
+        PassTB = findViewById(R.id.passwordSignIn);
+        signup=findViewById(R.id.btnSignUpCustomer);
 
         spinner = findViewById(R.id.spinnerTypeSignIn);
 
@@ -63,16 +65,31 @@ public class SignInActivity extends AppCompatActivity {
                 }
             });
             LoginB = findViewById(R.id.login);
-//            if (FirebaseAuth.getInstance().getCurrentUser()!= null) {
-//                startActivity(new Intent(this, RestaurantHomePage.class));
-//            } else {
+            if (FirebaseAuth.getInstance().getCurrentUser()!= null) {
+                SessionManager session = new SessionManager(getApplicationContext());
+                HashMap<String, String> user = session.getUserDetails();
+                String userId = user.get("userId").toString();
+                String categoryId = user.get("role").toString();
+                String mobileNo=user.get("mobileNo").toString();
+
+                if (categoryId.equals("Customer")){
+                    startActivity(new Intent(this, CustomerHomePage.class));
+                }
+                else {
+                    Intent intent =new Intent(getApplicationContext(),RestaurantHomePage.class);
+                    intent.putExtra("mobileNo",mobileNo);
+                    startActivity(intent);
+                }
+            }
+
+            else {
                 LoginB.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
                         getData(mobileNo.getText().toString());
                     }
                 });
-//            }
+            }
 
         }
     private void getData(String mobileNo) {
@@ -92,7 +109,10 @@ public class SignInActivity extends AppCompatActivity {
                     @Override
                     public void onSuccess(AuthResult authResult) {
 
-                        writeNewUserWithUid(name,email,mobileNo,password,FirebaseAuth.getInstance().getCurrentUser().getUid().toString());
+                        writeNewUserWithUid(name,email,mobileNo,password,FirebaseAuth.getInstance().getCurrentUser().getUid().toString(),s);
+
+                        SessionManager session = new SessionManager(getApplicationContext());
+                        session.createLoginSession(FirebaseAuth.getInstance().getCurrentUser().getUid().toString(),s.trim().toString(),mobileNo);
                         if (s.equals("Customer"))
                         {
                             Intent intent=new Intent(getApplicationContext(), CustomerHomePage.class);
@@ -105,12 +125,9 @@ public class SignInActivity extends AppCompatActivity {
                             intent.putExtra("mobileNo",mobileNo);
                             intent.putExtra("uid",FirebaseAuth.getInstance().getCurrentUser().getUid().toString());
                             startActivity(intent);
-//                            startActivity(new Intent(SignInActivity.this, RestaurantHomePage.class));
                         }
                     }
                 });
-                FirebaseUser currentFirebaseUser = FirebaseAuth.getInstance().getCurrentUser() ;
-//                Toast.makeText(getApplicationContext(), "" + currentFirebaseUser.getUid(), Toast.LENGTH_SHORT).show();
             }
 
             @Override
@@ -119,15 +136,13 @@ public class SignInActivity extends AppCompatActivity {
             }
         });
     }
-    public void writeNewUserWithUid(String name, String email, String mobileno,String password,String uid) {
-
-        User user = new User(name, email, mobileno, password);
+    public void writeNewUserWithUid(String name, String email, String mobileno,String password,String uid,String role) {
+        User user = new User(name, email, mobileno, password,role);
         reference.child("uid").child(uid).setValue(user);
         Toast.makeText(getApplicationContext(), "Data Send Successfully", Toast.LENGTH_SHORT).show();
 
     }
-    private void initUI()
-    {
+    private void initUI() {
         //UI reference of textView
         // create list of customer
         ArrayList<String> customerList = getCustomerList();
@@ -137,16 +152,6 @@ public class SignInActivity extends AppCompatActivity {
 
         //Set adapter
         spinner.setAdapter(adapter);
-
-        //submit button click event registration
-//        findViewById(R.id.submitButton).setOnClickListener(new View.OnClickListener()
-//        {
-//            @Override
-//            public void onClick(View view)
-//            {
-//                Toast.makeText(SignUpActivity.this, customerAutoTV.getText(), Toast.LENGTH_SHORT).show();
-//            }
-//        });
     }
 
     private ArrayList<String> getCustomerList()
