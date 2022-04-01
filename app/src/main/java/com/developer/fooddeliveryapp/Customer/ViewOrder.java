@@ -11,6 +11,7 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
+import android.widget.ImageButton;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -20,6 +21,7 @@ import com.developer.fooddeliveryapp.Customer.ItemsAdapter.ExampleAdapterListCus
 import com.developer.fooddeliveryapp.Customer.ItemsAdapter.ExampleItemCustomerList;
 import com.developer.fooddeliveryapp.R;
 import com.developer.fooddeliveryapp.Restraunt.ExampleItem;
+import com.developer.fooddeliveryapp.SessionManager;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -32,6 +34,7 @@ import com.razorpay.PaymentResultListener;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.UUID;
 
 public class ViewOrder extends AppCompatActivity implements PaymentResultListener {
@@ -44,12 +47,13 @@ public class ViewOrder extends AppCompatActivity implements PaymentResultListene
 
     DatabaseReference reference;
 
+    ImageButton buttonBack;
     TextView orderTotal;
     Button payment;
     int total=0;
 
     boolean b=false;
-
+    String mobNo;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -59,11 +63,25 @@ public class ViewOrder extends AppCompatActivity implements PaymentResultListene
 
         orderTotal=findViewById(R.id.orderTotal);
         payment=findViewById(R.id.payOrder);
+        buttonBack=findViewById(R.id.btnBackCart);
 
-        Intent intent=getIntent();
-        String mobileNo=intent.getStringExtra("mobileNo");
+        buttonBack.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                onBackPressed();
+            }
+        });
 
-        Toast.makeText(getApplicationContext(),mobileNo, Toast.LENGTH_SHORT).show();
+        SessionManager session = new SessionManager(getApplicationContext());
+        HashMap<String, String> user = session.getUserDetails();
+        String userId = user.get("userId").toString();
+        String categoryId = user.get("role").toString();
+        mobNo=user.get("mobileNo").toString();
+        String image=user.get("image").toString();
+        String email=user.get("email").toString();
+        String name=user.get("name").toString();
+
+        Toast.makeText(getApplicationContext(),mobNo, Toast.LENGTH_SHORT).show();
 
         payment.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -76,8 +94,8 @@ public class ViewOrder extends AppCompatActivity implements PaymentResultListene
 
     }
     public void createExampleList() {
-        Intent intent = getIntent();
-        String mobNo = intent.getStringExtra("mobileNo");
+//        Intent intent = getIntent();
+//        String mobNo = intent.getStringExtra("mobileNo");
 
         db= FirebaseDatabase.getInstance().getReference("users").child("Customer").child("Cart").child(mobNo);
         reference= FirebaseDatabase.getInstance().getReference("users").child("Customer").child("Cart").child(mobNo);
@@ -125,6 +143,7 @@ public class ViewOrder extends AppCompatActivity implements PaymentResultListene
                                 int price=Integer.parseInt(list.get(position).getText2());
                                 total+=price;
                                 orderTotal.setText(String.valueOf(total));
+                                Toast.makeText(getApplicationContext(), exampleItemCustomerList.getImageResource(), Toast.LENGTH_SHORT).show();
                                 writeItemDetails(exampleItemCustomerList.getText1(), exampleItemCustomerList.getText2(), exampleItemCustomerList.getQuantity().toString());
                             }
 
@@ -217,8 +236,11 @@ public class ViewOrder extends AppCompatActivity implements PaymentResultListene
 
     public void writeItemDetails(String itemName,String itemPrice,String quantity) {
 
-        ExampleItemCustomerListCart item = new ExampleItemCustomerListCart(R.drawable.ic_launcher_foreground,itemName,itemPrice,quantity);
+        ExampleItemCustomerListCart item = new ExampleItemCustomerListCart(itemName,itemPrice,quantity);
         db.child(itemName).setValue(item);
     }
-
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
+    }
 }

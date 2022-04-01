@@ -10,6 +10,7 @@ import android.widget.TextView;
 
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.developer.fooddeliveryapp.Customer.CartAdapter.ExampleItemCustomerListCart;
 import com.developer.fooddeliveryapp.R;
 
 import java.util.ArrayList;
@@ -35,6 +36,7 @@ public class ExampleAdapterListCustomer extends RecyclerView.Adapter<ExampleAdap
         public ImageView mImageView;
         public TextView mTextView1;
         public TextView mTextView2;
+
         private Button addToCart;
         private ImageView imageView;
 
@@ -46,6 +48,7 @@ public class ExampleAdapterListCustomer extends RecyclerView.Adapter<ExampleAdap
             mTextView2 = itemView.findViewById(R.id.textView2);
             addToCart=itemView.findViewById(R.id.addToCart);
             imageView=itemView.findViewById(R.id.doneBtnCustomer);
+
 
 
             addToCart.setOnClickListener(new View.OnClickListener() {
@@ -61,47 +64,6 @@ public class ExampleAdapterListCustomer extends RecyclerView.Adapter<ExampleAdap
                     }
                 }
             });
-
-
-
-
-//            addImageQuantity.setOnClickListener(new View.OnClickListener() {
-//                @Override
-//                public void onClick(View v) {
-//                    if (listener != null) {
-//                        int position = getAdapterPosition();
-//                        if (position != RecyclerView.NO_POSITION) {
-//                            listener.onAddImageQuantity(position);
-//                        }
-//                        ExampleItemCustomerList currentItem = mExampleList.get(position);
-//                        String q = quantity.getText().toString();
-//                        int quant = Integer.parseInt(q);
-//                        quant++;
-//                        currentItem.setQuantity(Integer.toString(quant));
-//                        quantity.setText(Integer.toString(quant));
-//                    }
-//                }
-//            });
-
-//            removeImageQuantity.setOnClickListener(new View.OnClickListener() {
-//                @Override
-//                public void onClick(View v) {
-//                    int position = getAdapterPosition();
-//                    if (position != RecyclerView.NO_POSITION) {
-//                        listener.onRemoveImageQuantity(position);
-//                    }
-//                    String q = quantity.getText().toString();
-//                    int quant = Integer.parseInt(q);
-//                    quant--;
-//                    if (quant == 0) {
-//                        linearLayout.setVisibility(View.GONE);
-//                        mAddImage.setVisibility(View.VISIBLE);
-//                    }
-//                    ExampleItemCustomerList currentItem = mExampleList.get(position);
-//                    currentItem.setQuantity(Integer.toString(quant));
-//                    quantity.setText(Integer.toString(quant));
-//                }
-//            });
 
         }
     }

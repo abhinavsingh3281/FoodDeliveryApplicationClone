@@ -20,6 +20,12 @@ public class ExampleItemCustomerListCart {
         this.mImageResource=mImageResource;
         this.quantity=quantity;
     }
+
+    public ExampleItemCustomerListCart( String mText1, String mText2, String quantity) {
+        this.mText1 = mText1;
+        this.mText2 = mText2;
+        this.quantity=quantity;
+    }
     public void changeText1(String text) {
         mText1 = text;
     }

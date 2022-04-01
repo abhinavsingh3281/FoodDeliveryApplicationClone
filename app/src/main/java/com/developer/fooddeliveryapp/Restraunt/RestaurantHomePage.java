@@ -18,6 +18,7 @@ import android.util.Base64;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
+import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
@@ -110,35 +111,11 @@ public class RestaurantHomePage extends AppCompatActivity implements NavigationV
                 AlertDialog alert11 = builder1.create();
                 alert11.show();
                 break;
-//            case R.id.nav_chat:
-//                getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container,
-//                        new ChatFragment()).commit();
-//                break;
-//            case R.id.nav_profile:
-//                getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container,
-//                        new ProfileFragment()).commit();
-//                break;
-//            case R.id.nav_share:
-//                Toast.makeText(this, "Share", Toast.LENGTH_SHORT).show();
-//                break;
-//            case R.id.nav_send:
-//                Toast.makeText(this, "Send", Toast.LENGTH_SHORT).show();
-//                break;
         }
 
         drawerLayout.closeDrawer(GravityCompat.START);
         return true;
     }
-//    @Override
-//    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
-//
-//         if (item.getItemId() == R.id.nav_logout) {
-//            Toast.makeText(getApplicationContext(), "Log Out", Toast.LENGTH_SHORT).show();
-//            LogOut();
-//        }
-//        return super.onOptionsItemSelected(item);
-//    }
-
 
 
     private void LogOut() {
@@ -162,6 +139,8 @@ public class RestaurantHomePage extends AppCompatActivity implements NavigationV
                     appleSnapshot.getRef().removeValue();
 
                 }
+                list.remove(position);
+                mAdapter.notifyItemRemoved(position);
 
             }
 
@@ -170,14 +149,9 @@ public class RestaurantHomePage extends AppCompatActivity implements NavigationV
                 Log.e("TAG", "onCancelled", databaseError.toException());
             }
         });
-        list.remove(position);
-        mAdapter.notifyItemRemoved(position);
 
-    }
 
-    public void changeItem(int position, String text) {
-        list.get(position).changeText1(text);
-        mAdapter.notifyItemChanged(position);
+
     }
 
     public void createExampleList() {
@@ -278,8 +252,8 @@ public class RestaurantHomePage extends AppCompatActivity implements NavigationV
                         reference.addListenerForSingleValueEvent(new ValueEventListener() {
                             @Override
                             public void onDataChange(@NonNull DataSnapshot snapshot) {
-                                ExampleItem item=writeItemDetails(itemName.getText().toString(),itemPrice.getText().toString());
-                                list.add(item);
+                               writeItemDetails(itemName.getText().toString(),itemPrice.getText().toString());
+
                                 mAdapter.notifyDataSetChanged();
                             }
 
@@ -293,10 +267,10 @@ public class RestaurantHomePage extends AppCompatActivity implements NavigationV
                 });
 
     }
-    public ExampleItem writeItemDetails(String itemName,String itemPrice) {
+    public void writeItemDetails(String itemName,String itemPrice) {
 
-        ExampleItem item = new ExampleItem(R.drawable.ic_launcher_foreground,itemName, itemPrice);
+        ExampleItem item = new ExampleItem(R.drawable.paneer,itemName, itemPrice);
         reference.child("items").child(itemName).setValue(item);
-        return item;
+        list.add(item);
     }
 }

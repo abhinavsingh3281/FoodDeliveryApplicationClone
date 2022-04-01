@@ -14,6 +14,8 @@
         <entry key="..\:/Android Studio 2020/Working Projects/food Delivery/app/src/main/res/drawable/ic_cart.xml" value="0.13802083333333334" />
         <entry key="..\:/Android Studio 2020/Working Projects/food Delivery/app/src/main/res/drawable/ic_delete_background.xml" value="0.26614583333333336" />
         <entry key="..\:/Android Studio 2020/Working Projects/food Delivery/app/src/main/res/drawable/ic_delete_foreground.xml" value="0.26614583333333336" />
+        <entry key="..\:/Android Studio 2020/Working Projects/food Delivery/app/src/main/res/drawable/ic_remove_foreground.xml" value="0.2490740740740741" />
+        <entry key="..\:/Android Studio 2020/Working Projects/food Delivery/app/src/main/res/drawable/ic_start.xml" value="0.2490740740740741" />
         <entry key="..\:/Android Studio 2020/Working Projects/food Delivery/app/src/main/res/drawable/image_name.xml" value="0.26614583333333336" />
         <entry key="..\:/Android Studio 2020/Working Projects/food Delivery/app/src/main/res/layout/activity_add_new_order.xml" value="0.16666666666666666" />
         <entry key="..\:/Android Studio 2020/Working Projects/food Delivery/app/src/main/res/layout/activity_customer_home_page.xml" value="0.19791666666666666" />
@@ -23,7 +25,7 @@
         <entry key="..\:/Android Studio 2020/Working Projects/food Delivery/app/src/main/res/layout/activity_sign_in.xml" value="0.264" />
         <entry key="..\:/Android Studio 2020/Working Projects/food Delivery/app/src/main/res/layout/activity_sign_up.xml" value="0.25412541254125415" />
         <entry key="..\:/Android Studio 2020/Working Projects/food Delivery/app/src/main/res/layout/activity_view_order.xml" value="0.19791666666666666" />
-        <entry key="..\:/Android Studio 2020/Working Projects/food Delivery/app/src/main/res/layout/exampleitem.xml" value="0.136" />
+        <entry key="..\:/Android Studio 2020/Working Projects/food Delivery/app/src/main/res/layout/exampleitem.xml" value="0.176" />
         <entry key="..\:/Android Studio 2020/Working Projects/food Delivery/app/src/main/res/layout/exampleitemCustomer.xml" value="0.2" />
         <entry key="..\:/Android Studio 2020/Working Projects/food Delivery/app/src/main/res/layout/exampleitem_list_customer.xml" value="0.264" />
         <entry key="..\:/Android Studio 2020/Working Projects/food Delivery/app/src/main/res/layout/exampleitem_list_customer_cart.xml" value="0.4" />

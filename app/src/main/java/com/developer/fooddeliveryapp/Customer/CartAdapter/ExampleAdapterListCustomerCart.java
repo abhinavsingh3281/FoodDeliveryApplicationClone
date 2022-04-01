@@ -51,9 +51,10 @@ public class ExampleAdapterListCustomerCart extends RecyclerView.Adapter<Example
 
         public ExampleViewHolderItemsCustomer(View itemView, final OnItemClickListener listener) {
             super(itemView);
-            mImageView = itemView.findViewById(R.id.imageViewCart);
+//            mImageView = itemView.findViewById(R.id.imageViewCart);
             mTextView1 = itemView.findViewById(R.id.textViewCart);
             mTextView2 = itemView.findViewById(R.id.textView2Cart);
+
             quantity = itemView.findViewById(R.id.quantity);
 
             addBtn=itemView.findViewById(R.id.AddBtn);
@@ -160,7 +161,7 @@ public class ExampleAdapterListCustomerCart extends RecyclerView.Adapter<Example
     public void onBindViewHolder(ExampleViewHolderItemsCustomer holder, int position) {
         ExampleItemCustomerListCart currentItem = mExampleList.get(position);
 
-        holder.mImageView.setImageResource(currentItem.getImageResource());
+//        holder.mImageView.setImageResource(currentItem.getImageResource());
         holder.mTextView1.setText(currentItem.getText1());
         holder.mTextView2.setText(currentItem.getText2());
         holder.quantity.setText(currentItem.getQuantity());

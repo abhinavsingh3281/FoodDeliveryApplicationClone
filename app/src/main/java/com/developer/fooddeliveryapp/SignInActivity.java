@@ -104,6 +104,9 @@ public class SignInActivity extends AppCompatActivity {
                 String email = snapshot.child("email").getValue(String.class);
                 String password = snapshot.child("password").getValue(String.class);
                 String name=snapshot.child("name").getValue(String.class);
+                String image=snapshot.child("image").getValue(String.class);
+                String address=snapshot.child("address").getValue(String.class);
+                String pincode=snapshot.child("pinCode").getValue(String.class);
 
                 FirebaseAuth.getInstance().signInWithEmailAndPassword(email,password).addOnSuccessListener(new OnSuccessListener<AuthResult>() {
                     @Override
@@ -112,7 +115,7 @@ public class SignInActivity extends AppCompatActivity {
                         writeNewUserWithUid(name,email,mobileNo,password,FirebaseAuth.getInstance().getCurrentUser().getUid().toString(),s);
 
                         SessionManager session = new SessionManager(getApplicationContext());
-                        session.createLoginSession(FirebaseAuth.getInstance().getCurrentUser().getUid().toString(),s.trim().toString(),mobileNo);
+                        session.createLoginSession(FirebaseAuth.getInstance().getCurrentUser().getUid().toString(),s.trim().toString(),mobileNo,image,name,email,address,pincode);
                         if (s.equals("Customer"))
                         {
                             Intent intent=new Intent(getApplicationContext(), CustomerHomePage.class);
@@ -153,6 +156,7 @@ public class SignInActivity extends AppCompatActivity {
         //Set adapter
         spinner.setAdapter(adapter);
     }
+    
 
     private ArrayList<String> getCustomerList()
     {

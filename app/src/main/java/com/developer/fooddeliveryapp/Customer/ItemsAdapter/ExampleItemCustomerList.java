@@ -1,8 +1,5 @@
 package com.developer.fooddeliveryapp.Customer.ItemsAdapter;
 
-
-
-
 public class ExampleItemCustomerList {
     private int mImageResource;
     private String mText1;

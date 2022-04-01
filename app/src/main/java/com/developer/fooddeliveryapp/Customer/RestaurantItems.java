@@ -7,6 +7,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -18,6 +19,7 @@ import android.widget.LinearLayout;
 import android.widget.PopupWindow;
 import android.widget.Toast;
 
+import com.developer.fooddeliveryapp.Customer.CartAdapter.ExampleItemCustomerListCart;
 import com.developer.fooddeliveryapp.Customer.ItemsAdapter.ExampleAdapterListCustomer;
 import com.developer.fooddeliveryapp.Customer.ItemsAdapter.ExampleItemCustomerList;
 import com.developer.fooddeliveryapp.MainActivity;
@@ -45,20 +47,29 @@ public class RestaurantItems extends AppCompatActivity {
     DatabaseReference GetUid;
     String email;
     String password, mobileNo;
+    ImageButton buttonBack;
+    ImageButton order;
 
-    TextInputEditText address;
-
-    MaterialButton order;
 
     ArrayList<ExampleItemCustomerList> list = new ArrayList<>();
 
-    DatabaseReference reference,add;
+    DatabaseReference add;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_restaurant_items);
         order=findViewById(R.id.btnOrder);
+        buttonBack=findViewById(R.id.btnBack);
+        createExampleList();
+
+        buttonBack.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                onBackPressed();
+            }
+        });
+
 
         SessionManager session = new SessionManager(getApplicationContext());
         HashMap<String, String> user = session.getUserDetails();
@@ -71,16 +82,15 @@ public class RestaurantItems extends AppCompatActivity {
         String pincode=user.get("pincode").toString();
         String location=user.get("address").toString();
 
-
         Intent intent=getIntent();
         String mobNo=intent.getStringExtra("mobNo");
 
         String mobNoCustomer=intent.getStringExtra("mobileNumberCustomer");
 
-        reference=FirebaseDatabase.getInstance().getReference("users").child("Customer");
+
 
         add=FirebaseDatabase.getInstance().getReference("users").child("Customer").child("Cart").child(mobNoCustomer);
-        createExampleList();
+
         order.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -131,12 +141,15 @@ public class RestaurantItems extends AppCompatActivity {
                     ExampleItemCustomerList p = dataSnapshot1.getValue(ExampleItemCustomerList.class);
                     list.add(p);
                 }
+
                 mAdapter = new ExampleAdapterListCustomer(list);
 
 
                 mRecyclerView.setLayoutManager(mLayoutManager);
                 mRecyclerView.setAdapter(mAdapter);
+
                 mAdapter.setOnItemClickListener(new ExampleAdapterListCustomer.OnItemClickListener() {
+
                     @Override
                     public void addToCart(int position) {
                         ExampleItemCustomerList exampleItemCustomerList=list.get(position);
@@ -182,5 +195,10 @@ public class RestaurantItems extends AppCompatActivity {
         ExampleItemCustomerList customerList = new ExampleItemCustomerList(R.drawable.ic_launcher_foreground,itemName,itemPrice,quantity);
         add.child(itemName).setValue(customerList);
         Toast.makeText(getApplicationContext(), "Data Send Successfully", Toast.LENGTH_SHORT).show();
+    }
+
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
     }
 }

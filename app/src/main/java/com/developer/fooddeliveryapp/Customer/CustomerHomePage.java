@@ -1,6 +1,7 @@
 package com.developer.fooddeliveryapp.Customer;
 
 import androidx.annotation.NonNull;
+import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.ActionBarDrawerToggle;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
@@ -20,6 +21,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -31,6 +33,7 @@ import com.developer.fooddeliveryapp.Restraunt.RestaurantHomePage;
 import com.developer.fooddeliveryapp.SessionManager;
 import com.developer.fooddeliveryapp.SignInActivity;
 import com.google.android.material.navigation.NavigationView;
+import com.google.android.material.textfield.TextInputEditText;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -48,7 +51,7 @@ public class CustomerHomePage extends AppCompatActivity implements NavigationVie
     private ExampleAdapterCustomer mAdapter;
     private RecyclerView.LayoutManager mLayoutManager;
 
-    private EditText pinCode;
+    private TextInputEditText pinCode;
     private Button checkPin;
 
     DatabaseReference getUserDetails;
@@ -58,9 +61,10 @@ public class CustomerHomePage extends AppCompatActivity implements NavigationVie
 
     ArrayList<ExampleItemCustomer> list = new ArrayList<>();
 
-    DatabaseReference reference;
+    ImageButton viewCart;
 
     DrawerLayout drawerLayout;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -70,7 +74,14 @@ public class CustomerHomePage extends AppCompatActivity implements NavigationVie
         pinCode=findViewById(R.id.customerPinCode);
         checkPin=findViewById(R.id.btnCustomerPinCode);
 
-        pinCode.setText("125005");
+        viewCart=findViewById(R.id.toolbarViewCart);
+
+        viewCart.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                startActivity(new Intent(CustomerHomePage.this,ViewOrder.class));
+            }
+        });
 
         uid = FirebaseAuth.getInstance().getCurrentUser().getUid();
 
@@ -82,6 +93,11 @@ public class CustomerHomePage extends AppCompatActivity implements NavigationVie
         String image=user.get("image").toString();
         String email=user.get("email").toString();
         String name=user.get("name").toString();
+        String pincode=user.get("pincode").toString();
+
+        pinCode.setText(pincode);
+
+        createExampleList(pincode,mobileNo);
 
         byte [] bytes= Base64.decode(image,Base64.DEFAULT);
         Bitmap bitmap= BitmapFactory.decodeByteArray(bytes,0, bytes.length);
@@ -107,23 +123,8 @@ public class CustomerHomePage extends AppCompatActivity implements NavigationVie
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(this, drawerLayout, toolbar,
                 R.string.nav_open, R.string.nav_close);
         drawerLayout.addDrawerListener(toggle);
+//        drawerLayout.setFitsSystemWindows(true);
         toggle.syncState();
-//        getUserDetails = FirebaseDatabase.getInstance().getReference("users").child("all").child("uid").child(uid);
-//
-//        getUserDetails.addListenerForSingleValueEvent(new ValueEventListener() {
-//            @Override
-//            public void onDataChange(@NonNull DataSnapshot snapshot) {
-//                email = snapshot.child("email").getValue(String.class);
-//                password = snapshot.child("password").getValue(String.class);
-//                mobileNo = snapshot.child("mobileNo").getValue(String.class);
-//            }
-//
-//            @Override
-//            public void onCancelled(@NonNull DatabaseError error) {
-//
-//            }
-//        });
-
 
         checkPin.setOnClickListener(new View.OnClickListener() {
             @Override
