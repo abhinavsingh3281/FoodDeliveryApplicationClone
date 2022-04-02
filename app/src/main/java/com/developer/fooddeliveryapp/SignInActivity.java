@@ -146,12 +146,11 @@ public class SignInActivity extends AppCompatActivity {
 
     }
     private void initUI() {
-        //UI reference of textView
-        // create list of customer
+
         ArrayList<String> customerList = getCustomerList();
 
         //Create adapter
-        ArrayAdapter<String> adapter = new ArrayAdapter<>(SignInActivity.this, android.R.layout.simple_spinner_item, customerList);
+        ArrayAdapter<String> adapter = new ArrayAdapter<>(SignInActivity.this, android.R.layout.simple_spinner_dropdown_item, customerList);
 
         //Set adapter
         spinner.setAdapter(adapter);

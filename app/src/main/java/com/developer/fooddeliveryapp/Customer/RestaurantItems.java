@@ -50,7 +50,6 @@ public class RestaurantItems extends AppCompatActivity {
     ImageButton buttonBack;
     ImageButton order;
 
-
     ArrayList<ExampleItemCustomerList> list = new ArrayList<>();
 
     DatabaseReference add;
@@ -105,25 +104,25 @@ public class RestaurantItems extends AppCompatActivity {
         Intent intent = getIntent();
         String mobNo = intent.getStringExtra("mobNo");
 
-        Toast.makeText(getApplicationContext(), "InIt", Toast.LENGTH_SHORT).show();
+//        Toast.makeText(getApplicationContext(), "InIt", Toast.LENGTH_SHORT).show();
 
-        String uid = FirebaseAuth.getInstance().getCurrentUser().getUid();
+//        String uid = FirebaseAuth.getInstance().getCurrentUser().getUid();
 
-        GetUid = FirebaseDatabase.getInstance().getReference("users").child("all").child("uid").child(uid);
-
-        GetUid.addListenerForSingleValueEvent(new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot snapshot) {
-                email = snapshot.child("email").getValue(String.class);
-                password = snapshot.child("password").getValue(String.class);
-                mobileNo = snapshot.child("mobileNo").getValue(String.class);
-            }
-
-            @Override
-            public void onCancelled(@NonNull DatabaseError error) {
-
-            }
-        });
+//        GetUid = FirebaseDatabase.getInstance().getReference("users").child("all").child("uid").child(uid);
+//
+//        GetUid.addListenerForSingleValueEvent(new ValueEventListener() {
+//            @Override
+//            public void onDataChange(@NonNull DataSnapshot snapshot) {
+//                email = snapshot.child("email").getValue(String.class);
+//                password = snapshot.child("password").getValue(String.class);
+//                mobileNo = snapshot.child("mobileNo").getValue(String.class);
+//            }
+//
+//            @Override
+//            public void onCancelled(@NonNull DatabaseError error) {
+//
+//            }
+//        });
 
 
         DatabaseReference db = FirebaseDatabase.getInstance().getReference("users").child("Restaurant").child(mobNo).child("items");
@@ -166,20 +165,6 @@ public class RestaurantItems extends AppCompatActivity {
                             }
                         });
                     }
-
-//                    @Override
-//                    public void onItemClick(int position) {
-//                        ExampleItemCustomerList exampleItemCustomerList=list.get(position);
-//                        Intent intent1=new Intent(getApplicationContext(),ViewOrder.class);
-//                        String itemName= exampleItemCustomerList.getText1();
-//                        String itemPrice=exampleItemCustomerList.getText2();
-//
-//                        intent1.putExtra("itemName",itemName);
-//                        intent1.putExtra("itemPrice",itemPrice);
-//
-//                        startActivity(intent1);
-//                    }
-//
                 });
 
             }
@@ -191,10 +176,10 @@ public class RestaurantItems extends AppCompatActivity {
         });
     }
 
-    public void writeNewCart(String itemName, String itemPrice,String quantity) {
-        ExampleItemCustomerList customerList = new ExampleItemCustomerList(R.drawable.ic_launcher_foreground,itemName,itemPrice,quantity);
+    private void writeNewCart(String itemName, String itemPrice,String quantity) {
+        ExampleItemCustomerList customerList = new ExampleItemCustomerList(R.drawable.paneer,itemName,itemPrice,quantity);
         add.child(itemName).setValue(customerList);
-        Toast.makeText(getApplicationContext(), "Data Send Successfully", Toast.LENGTH_SHORT).show();
+        Toast.makeText(getApplicationContext(), "Data Send Successfully IN rESTRAUNT", Toast.LENGTH_SHORT).show();
     }
 
     @Override

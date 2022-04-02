@@ -30,6 +30,8 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.razorpay.Checkout;
 import com.razorpay.PaymentResultListener;
+import com.shashank.sony.fancygifdialoglib.FancyGifDialog;
+import com.shashank.sony.fancygifdialoglib.FancyGifDialogListener;
 
 import org.json.JSONObject;
 
@@ -143,8 +145,11 @@ public class ViewOrder extends AppCompatActivity implements PaymentResultListene
                                 int price=Integer.parseInt(list.get(position).getText2());
                                 total+=price;
                                 orderTotal.setText(String.valueOf(total));
-                                Toast.makeText(getApplicationContext(), exampleItemCustomerList.getImageResource(), Toast.LENGTH_SHORT).show();
-                                writeItemDetails(exampleItemCustomerList.getText1(), exampleItemCustomerList.getText2(), exampleItemCustomerList.getQuantity().toString());
+                                int category=Integer.parseInt(exampleItemCustomerList.getQuantity());
+                                String cat=Integer.toString(category);
+                                Toast.makeText(getApplicationContext(), cat, Toast.LENGTH_SHORT).show();
+                                //add mien error h
+                                writeItemDetails(exampleItemCustomerList.getText1(), exampleItemCustomerList.getText2(), cat);
                             }
 
                             @Override
@@ -152,7 +157,7 @@ public class ViewOrder extends AppCompatActivity implements PaymentResultListene
 
                             }
                         });
-                        Toast.makeText(getApplicationContext(), exampleItemCustomerList.getQuantity(), Toast.LENGTH_SHORT).show();
+//                        Toast.makeText(getApplicationContext(), exampleItemCustomerList.getQuantity(), Toast.LENGTH_SHORT).show();
                     }
 
                     @Override
@@ -166,9 +171,14 @@ public class ViewOrder extends AppCompatActivity implements PaymentResultListene
                                 orderTotal.setText(String.valueOf(total));
                                 if(exampleItemCustomerList.getQuantity().equals("0"))
                                 {
-                                    db.getDatabase().getReference().child("users").child("Customer").child("Cart").child(mobNo).child(exampleItemCustomerList.getText1()).removeValue();
+                                    DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference();
+                                    databaseReference.child("users").child("Customer").child("Cart").child(mobNo).child(exampleItemCustomerList.getText1()).removeValue();
                                     b=true;
-                                    createExampleList();
+                                    list.remove(position);
+                                    //reload activity
+//                                    finish();
+                                    startActivity(new Intent(getApplicationContext(),ViewOrder.class));
+
                                 }
                                 else
                                 {
@@ -235,12 +245,37 @@ public class ViewOrder extends AppCompatActivity implements PaymentResultListene
     }
 
     public void writeItemDetails(String itemName,String itemPrice,String quantity) {
-
-        ExampleItemCustomerListCart item = new ExampleItemCustomerListCart(itemName,itemPrice,quantity);
+        ExampleItemCustomerListCart item = new ExampleItemCustomerListCart(R.drawable.paneer,itemName,itemPrice,quantity);
         db.child(itemName).setValue(item);
     }
     @Override
     public void onBackPressed() {
-        super.onBackPressed();
+        new FancyGifDialog.Builder(this)
+                .setTitle("Are you sure you want to go back ?") // You can also send title like R.string.from_resources
+                .setMessage("By Pressing OK your cart data will be removed.") // or pass like R.string.description_from_resources
+                .setTitleTextColor(R.color.titleText)
+                .setDescriptionTextColor(R.color.descriptionText)
+                .setNegativeBtnText("Cancel") // or pass it like android.R.string.cancel
+                .setPositiveBtnBackground(R.color.positiveButton)
+                .setPositiveBtnText("Ok") // or pass it like android.R.string.ok
+                .setNegativeBtnBackground(R.color.negativeButton)
+                .setGifResource(R.drawable.giflogout)   //Pass your Gif here
+                .isCancellable(true)
+                .OnPositiveClicked(new FancyGifDialogListener() {
+                    @Override
+                    public void OnClick() {
+                        DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference();
+                        databaseReference.child("users").child("Customer").child("Cart").child(mobNo).removeValue();
+                        startActivity(new Intent(getApplicationContext(),CustomerHomePage.class));
+                        Toast.makeText(ViewOrder.this,"Ok",Toast.LENGTH_SHORT).show();
+                    }
+                })
+                .OnNegativeClicked(new FancyGifDialogListener() {
+                    @Override
+                    public void OnClick() {
+                        Toast.makeText(ViewOrder.this,"Cancel",Toast.LENGTH_SHORT).show();
+                    }
+                })
+                .build();
     }
 }
