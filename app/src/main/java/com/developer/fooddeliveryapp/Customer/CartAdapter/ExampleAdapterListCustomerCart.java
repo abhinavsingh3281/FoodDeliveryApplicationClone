@@ -1,17 +1,10 @@
 package com.developer.fooddeliveryapp.Customer.CartAdapter;
 
-import android.text.Editable;
-import android.text.TextWatcher;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
-import android.widget.EditText;
 import android.widget.ImageView;
-import android.widget.NumberPicker;
-import android.widget.Spinner;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -152,7 +145,7 @@ public class ExampleAdapterListCustomerCart extends RecyclerView.Adapter<Example
 
     @Override
     public ExampleViewHolderItemsCustomer onCreateViewHolder(ViewGroup parent, int viewType) {
-        View v = LayoutInflater.from(parent.getContext()).inflate(R.layout.exampleitem_list_customer_cart, parent, false);
+        View v = LayoutInflater.from(parent.getContext()).inflate(R.layout.customer_cart_list_view, parent, false);
         ExampleViewHolderItemsCustomer evh = new ExampleViewHolderItemsCustomer(v, mListener);
         return evh;
     }

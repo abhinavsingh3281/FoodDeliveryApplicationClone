@@ -1,5 +1,8 @@
-package com.developer.fooddeliveryapp.Customer;
+package com.developer.fooddeliveryapp.Customer.HomePageAdapter;
 
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.util.Base64;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -34,7 +37,7 @@ public class ExampleAdapterCustomer extends RecyclerView.Adapter<ExampleAdapterC
 
         public ExampleViewHolder(View itemView, final OnItemClickListener listener) {
             super(itemView);
-//            mImageView = itemView.findViewById(R.id.imageViewRestaurant);
+            mImageView = itemView.findViewById(R.id.imageViewRestaurant);
             mTextView1 = itemView.findViewById(R.id.restaurantName);
             mTextView2 = itemView.findViewById(R.id.restaurantEmail);
 
@@ -59,7 +62,7 @@ public class ExampleAdapterCustomer extends RecyclerView.Adapter<ExampleAdapterC
 
     @Override
     public ExampleViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        View v = LayoutInflater.from(parent.getContext()).inflate(R.layout.exampleitemcustomer, parent, false);
+        View v = LayoutInflater.from(parent.getContext()).inflate(R.layout.customerhomepageview, parent, false);
         ExampleViewHolder evh = new ExampleViewHolder(v, mListener);
         return evh;
     }
@@ -68,9 +71,21 @@ public class ExampleAdapterCustomer extends RecyclerView.Adapter<ExampleAdapterC
     public void onBindViewHolder(ExampleViewHolder holder, int position) {
         ExampleItemCustomer currentItem = mExampleList.get(position);
 
-//        holder.mImageView.setImageResource(currentItem.getImageResource());
-        holder.mTextView1.setText(currentItem.getName());
+        holder.mImageView.setImageBitmap(StringToBitMap(currentItem.getImage()));
+        holder.mTextView1.setText(currentItem.getRestaurantName());
         holder.mTextView2.setText(currentItem.getEmail());
+    }
+
+    public Bitmap StringToBitMap(String encodedString){
+        try{
+            byte [] encodeByte = Base64.decode(encodedString,Base64.DEFAULT);
+            Bitmap bitmap = BitmapFactory.decodeByteArray(encodeByte, 0, encodeByte.length);
+            return bitmap;
+        }
+        catch(Exception e){
+            e.getMessage();
+            return null;
+        }
     }
 
     @Override

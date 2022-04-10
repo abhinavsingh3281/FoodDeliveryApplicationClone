@@ -12,4 +12,7 @@
     <color name="descriptionText">#777777</color>
     <color name="positiveButton">#FF4081</color>
     <color name="negativeButton">#A9A7A8</color>
+
+    <color name="accent">#607D8B</color>
+    <color name="Wheat">#F5DEB3</color>
 </resources>

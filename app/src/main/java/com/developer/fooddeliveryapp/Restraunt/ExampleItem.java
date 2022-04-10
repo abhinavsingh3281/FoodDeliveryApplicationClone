@@ -4,7 +4,7 @@ package com.developer.fooddeliveryapp.Restraunt;
 
 
 public class ExampleItem {
-    private int mImageResource;
+    private String mImageResource;
     private String mText1;
     private String mText2;
 
@@ -13,7 +13,7 @@ public class ExampleItem {
 
     }
 
-    public ExampleItem(int mImageResource,String mText1, String mText2) {
+    public ExampleItem(String mImageResource,String mText1, String mText2) {
         this.mText1 = mText1;
         this.mText2 = mText2;
         this.mImageResource=mImageResource;
@@ -50,11 +50,11 @@ public class ExampleItem {
         this.mText2 = mText2;
     }
 
-    public int getImageResource() {
+    public String getImageResource() {
         return mImageResource;
     }
 
-    public void setImageResource(int mImageResource) {
+    public void setImageResource(String mImageResource) {
         this.mImageResource = mImageResource;
     }
 }

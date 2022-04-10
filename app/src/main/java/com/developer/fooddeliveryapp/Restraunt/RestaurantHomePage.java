@@ -1,5 +1,7 @@
 package com.developer.fooddeliveryapp.Restraunt;
 
+import androidx.activity.result.ActivityResultLauncher;
+import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.ActionBarDrawerToggle;
 import androidx.appcompat.app.AlertDialog;
@@ -13,21 +15,25 @@ import androidx.recyclerview.widget.RecyclerView;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.net.Uri;
 import android.os.Bundle;
+import android.provider.MediaStore;
 import android.util.Base64;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
-import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
+import android.widget.FrameLayout;
 import android.widget.LinearLayout;
 import android.widget.PopupWindow;
 import android.widget.TextView;
 
 import com.developer.fooddeliveryapp.R;
-import com.developer.fooddeliveryapp.SignInActivity;
+import com.developer.fooddeliveryapp.SessionManager;
+import com.developer.fooddeliveryapp.SignInAndUp.SignInActivity;
 import com.google.android.material.navigation.NavigationView;
 import com.google.android.material.textfield.TextInputEditText;
 import com.google.firebase.auth.FirebaseAuth;
@@ -36,9 +42,13 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+import com.makeramen.roundedimageview.RoundedImageView;
 
 import java.io.ByteArrayOutputStream;
+import java.io.FileNotFoundException;
+import java.io.InputStream;
 import java.util.ArrayList;
+import java.util.HashMap;
 
 public class RestaurantHomePage extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener{
     private ArrayList<ExampleItem> mExampleList;
@@ -51,9 +61,16 @@ public class RestaurantHomePage extends AppCompatActivity implements NavigationV
 
     FirebaseDatabase firebaseDatabase;
 
+    DatabaseReference db;
+    String mobNo;
+
     DatabaseReference deleteDatabaseReference;
 
     ArrayList<ExampleItem>list=new ArrayList<>();
+
+    RoundedImageView imageView;
+    TextView textAddImage;
+    private String encodedImage;
 
     DatabaseReference reference;
     DrawerLayout drawerLayout;
@@ -64,17 +81,14 @@ public class RestaurantHomePage extends AppCompatActivity implements NavigationV
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_restraunt_home_page);
-
-//        drawerLayout = findViewById(R.id.drawer_layout);
-//        actionBarDrawerToggle = new ActionBarDrawerToggle(this, drawerLayout, R.string.nav_open, R.string.nav_close);
-//
-//        // pass the Open and Close toggle for the drawer layout listener
-//        // to toggle the button
-//        drawerLayout.addDrawerListener(actionBarDrawerToggle);
-//        actionBarDrawerToggle.syncState();
-//
-//        // to make the Navigation drawer icon always appear on the action bar
-//        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        SessionManager session = new SessionManager(getApplicationContext());
+        HashMap<String, String> user = session.getUserDetails();
+        String userId = user.get("userId").toString();
+        String categoryId = user.get("role").toString();
+        mobNo=user.get("mobileNo").toString();
+        String image=user.get("image").toString();
+        String email=user.get("email").toString();
+        String name=user.get("name").toString();
 
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
@@ -124,13 +138,11 @@ public class RestaurantHomePage extends AppCompatActivity implements NavigationV
     }
 
     public void removeItem(int position) {
-        Intent intent=getIntent();
-        String mob=intent.getStringExtra("mobileNo");
         firebaseDatabase = FirebaseDatabase.getInstance();
 
         String s=list.get(position).getText1();
 
-        deleteDatabaseReference = firebaseDatabase.getReference("users").child("Restaurant").child(mob).child("items").child(s);
+        deleteDatabaseReference = firebaseDatabase.getReference("users").child("Restaurant").child(mobNo).child("items").child(s);
 
         deleteDatabaseReference.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
@@ -140,8 +152,7 @@ public class RestaurantHomePage extends AppCompatActivity implements NavigationV
 
                 }
                 list.remove(position);
-                mAdapter.notifyItemRemoved(position);
-
+                startActivity(new Intent(getApplicationContext(), RestaurantHomePage.class));
             }
 
             @Override
@@ -155,10 +166,10 @@ public class RestaurantHomePage extends AppCompatActivity implements NavigationV
     }
 
     public void createExampleList() {
-        Intent intent=getIntent();
-        String mob=intent.getStringExtra("mobileNo");
+//        Intent intent=getIntent();
+//        String mob=intent.getStringExtra("mobileNo");
 
-        DatabaseReference db=FirebaseDatabase.getInstance().getReference("users").child("Restaurant").child(mob).child("items");
+        db=FirebaseDatabase.getInstance().getReference("users").child("Restaurant").child(mobNo).child("items");
 
         mRecyclerView = findViewById(R.id.recyclerView);
         mRecyclerView.setHasFixedSize(true);
@@ -199,13 +210,17 @@ public class RestaurantHomePage extends AppCompatActivity implements NavigationV
 //        Toast.makeText(getApplicationContext(), mob, Toast.LENGTH_SHORT).show();
 
     }
-    public String BitMapToString(Bitmap bitmap){
-        ByteArrayOutputStream baos=new  ByteArrayOutputStream();
-        bitmap.compress(Bitmap.CompressFormat.PNG,100, baos);
-        byte [] b=baos.toByteArray();
-        String temp= Base64.encodeToString(b, Base64.DEFAULT);
-        return temp;
+    private String encodeImage(Bitmap bitmap)
+    {
+        int previewWidth=150;
+        int previewHeight=bitmap.getHeight()*previewWidth/bitmap.getWidth();
+        Bitmap previewBitmap=Bitmap.createScaledBitmap(bitmap,previewWidth,previewHeight,false);
+        ByteArrayOutputStream byteArrayOutputStream=new ByteArrayOutputStream();
+        previewBitmap.compress(Bitmap.CompressFormat.JPEG,50,byteArrayOutputStream);
+        byte[] bytes=byteArrayOutputStream.toByteArray();
+        return Base64.encodeToString(bytes, Base64.DEFAULT);
     }
+
 
     public void setButtons() {
         buttonInsert = findViewById(R.id.button_insert);
@@ -237,6 +252,16 @@ public class RestaurantHomePage extends AppCompatActivity implements NavigationV
         // dismiss the popup window when touched
 
         TextInputEditText itemName=popupView.findViewById(R.id.setItemName);
+        imageView=popupView.findViewById(R.id.imageFoodRestaurant);
+        textAddImage=popupView.findViewById(R.id.textAddImage);
+        FrameLayout frameLayoutImage=popupView.findViewById(R.id.layoutImageRestaurant);
+
+        frameLayoutImage.setOnClickListener(v->{
+            Intent intent=new Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
+            intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
+            pickImage.launch(intent);
+        });
+
         TextInputEditText itemPrice=popupView.findViewById(R.id.setItemPrice);
 
         Button add=popupView.findViewById(R.id.saveItems);
@@ -244,17 +269,16 @@ public class RestaurantHomePage extends AppCompatActivity implements NavigationV
             @Override
             public void onClick(View v) {
 
-                Intent intent=getIntent();
-                String mob=intent.getStringExtra("mobileNo");
 
-                reference=FirebaseDatabase.getInstance().getReference("users").child("Restaurant").child(mob);
+                reference=FirebaseDatabase.getInstance().getReference("users").child("Restaurant").child(mobNo);
 
                         reference.addListenerForSingleValueEvent(new ValueEventListener() {
                             @Override
                             public void onDataChange(@NonNull DataSnapshot snapshot) {
-                               writeItemDetails(itemName.getText().toString(),itemPrice.getText().toString());
+//                                BigInteger bigIntegerStr=new BigInteger(encodedImage);
+                               writeItemDetails(encodedImage,itemName.getText().toString(),itemPrice.getText().toString());
 
-                                mAdapter.notifyDataSetChanged();
+                                startActivity(new Intent(getApplicationContext(),RestaurantHomePage.class));
                             }
 
                             @Override
@@ -267,10 +291,30 @@ public class RestaurantHomePage extends AppCompatActivity implements NavigationV
                 });
 
     }
-    public void writeItemDetails(String itemName,String itemPrice) {
+    private final ActivityResultLauncher<Intent> pickImage=registerForActivityResult(
+            new ActivityResultContracts.StartActivityForResult(), result ->  {
+                if (result.getResultCode()==RESULT_OK)
+                {
+                    if(result.getData()!=null)
+                    {
+                        Uri imageUri=result.getData().getData();
+                        try {
+                            InputStream inputStream=getContentResolver().openInputStream(imageUri);
+                            Bitmap bitmap= BitmapFactory.decodeStream(inputStream);
+                            imageView.setImageBitmap(bitmap);
+                            textAddImage.setVisibility(View.GONE);
+                            encodedImage=encodeImage(bitmap);
+                        }
+                        catch (FileNotFoundException e)
+                        {
+                            e.printStackTrace();
+                        }
+                    }
+                }
+            });
+    public void writeItemDetails(String image,String itemName,String itemPrice) {
 
-        ExampleItem item = new ExampleItem(R.drawable.paneer,itemName, itemPrice);
+        ExampleItem item = new ExampleItem(image,itemName, itemPrice);
         reference.child("items").child(itemName).setValue(item);
-        list.add(item);
     }
 }

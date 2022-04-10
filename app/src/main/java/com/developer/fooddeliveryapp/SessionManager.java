@@ -40,6 +40,7 @@ public class SessionManager {
 
     public static final String KEY_EMAIL="email";
 
+    public static final String KEY_RESTAURANT_NAME="restaurantName";
 
 
 
@@ -90,6 +91,32 @@ public class SessionManager {
         // commit changes
         editor.commit();
     }
+
+    public void createLoginSession(String userId, String role,String mobileNo,String image,String name,String email,String address,String pinCode,String restaurantName) {
+
+        // Storing userId in pref
+        editor.putString(KEY_USERID, userId);
+
+        // Storing catId in pref
+        editor.putString(KEY_ROLE, role);
+
+        editor.putString(KEY_MOBILE,mobileNo);
+
+        editor.putString(KEY_IMAGE,image);
+
+        editor.putString(KEY_NAME, name);
+
+        editor.putString(KEY_EMAIL,email);
+
+        editor.putString(KEY_ADDRESS,address);
+
+        editor.putString(KEY_PINCODE,pinCode);
+
+        editor.putString(KEY_RESTAURANT_NAME,restaurantName);
+
+        // commit changes
+        editor.commit();
+    }
     /**
      * Call this method anywhere in the project to Get the stored session data
      * */
@@ -105,6 +132,7 @@ public class SessionManager {
         user.put("name",sharedPrefer.getString(KEY_NAME,null));
         user.put("address",sharedPrefer.getString(KEY_ADDRESS,null));
         user.put("pincode",sharedPrefer.getString(KEY_PINCODE,null));
+        user.put("restaurantName",sharedPrefer.getString(KEY_PINCODE,null));
 
         return user;
     }

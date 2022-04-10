@@ -1,4 +1,4 @@
-package com.developer.fooddeliveryapp;
+package com.developer.fooddeliveryapp.SignInAndUp;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
@@ -9,17 +9,18 @@ import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
 import android.widget.Button;
-import android.widget.EditText;
-import android.widget.Spinner;
 import android.widget.Toast;
 
 import com.developer.fooddeliveryapp.Customer.CustomerHomePage;
+import com.developer.fooddeliveryapp.R;
 import com.developer.fooddeliveryapp.Restraunt.RestaurantHomePage;
+import com.developer.fooddeliveryapp.SessionManager;
+import com.developer.fooddeliveryapp.SignInAndUp.SignUp.SignUpMainActivity;
+import com.developer.fooddeliveryapp.User;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.material.textfield.TextInputEditText;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -39,8 +40,6 @@ public class SignInActivity extends AppCompatActivity {
     DatabaseReference databaseReference;
 
     DatabaseReference reference;
-    DatabaseReference getReference;
-
     AutoCompleteTextView spinner;
 
     @Override
@@ -61,7 +60,7 @@ public class SignInActivity extends AppCompatActivity {
             signup.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    startActivity(new Intent(SignInActivity.this,SignUpActivity.class));
+                    startActivity(new Intent(SignInActivity.this, SignUpMainActivity.class));
                 }
             });
             LoginB = findViewById(R.id.login);

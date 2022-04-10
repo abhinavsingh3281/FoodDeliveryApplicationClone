@@ -1,7 +1,6 @@
 package com.developer.fooddeliveryapp.Customer;
 
 import androidx.annotation.NonNull;
-import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.ActionBarDrawerToggle;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
@@ -20,18 +19,14 @@ import android.util.Base64;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
-import android.widget.EditText;
-import android.widget.ImageButton;
-import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.developer.fooddeliveryapp.Customer.HomePageAdapter.ExampleAdapterCustomer;
+import com.developer.fooddeliveryapp.Customer.HomePageAdapter.ExampleItemCustomer;
 import com.developer.fooddeliveryapp.R;
-import com.developer.fooddeliveryapp.Restraunt.ExampleAdapter;
-import com.developer.fooddeliveryapp.Restraunt.ExampleItem;
-import com.developer.fooddeliveryapp.Restraunt.RestaurantHomePage;
 import com.developer.fooddeliveryapp.SessionManager;
-import com.developer.fooddeliveryapp.SignInActivity;
+import com.developer.fooddeliveryapp.SignInAndUp.SignInActivity;
 import com.google.android.material.navigation.NavigationView;
 import com.google.android.material.textfield.TextInputEditText;
 import com.google.firebase.auth.FirebaseAuth;
@@ -41,9 +36,13 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.makeramen.roundedimageview.RoundedImageView;
+import com.shashank.sony.fancygifdialoglib.FancyGifDialog;
+import com.shashank.sony.fancygifdialoglib.FancyGifDialogListener;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+
+import pl.droidsonroids.gif.GifImageButton;
 
 public class CustomerHomePage extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener{
 
@@ -54,17 +53,13 @@ public class CustomerHomePage extends AppCompatActivity implements NavigationVie
     private TextInputEditText pinCode;
     private Button checkPin;
 
-    DatabaseReference getUserDetails;
-    String email;
-    String password, mobileNo;
     String uid;
 
     ArrayList<ExampleItemCustomer> list = new ArrayList<>();
 
-    ImageButton viewCart;
+    GifImageButton viewCart;
 
     DrawerLayout drawerLayout;
-
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -76,12 +71,12 @@ public class CustomerHomePage extends AppCompatActivity implements NavigationVie
 
         viewCart=findViewById(R.id.toolbarViewCart);
 
-        viewCart.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                startActivity(new Intent(CustomerHomePage.this,ViewOrder.class));
-            }
-        });
+//        viewCart.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View v) {
+//                startActivity(new Intent(CustomerHomePage.this,ViewOrder.class));
+//            }
+//        });
 
         uid = FirebaseAuth.getInstance().getCurrentUser().getUid();
 
@@ -140,20 +135,31 @@ public class CustomerHomePage extends AppCompatActivity implements NavigationVie
     public boolean onNavigationItemSelected(@NonNull MenuItem item) {
         switch (item.getItemId()) {
             case R.id.nav_logout:
-                AlertDialog.Builder builder1 = new AlertDialog.Builder(CustomerHomePage.this);
-                builder1.setMessage("Do you want to Log Out");
-                builder1.setCancelable(true);
-
-                builder1.setPositiveButton(
-                        "OK",
-                        new DialogInterface.OnClickListener() {
-                            public void onClick(DialogInterface dialog, int id) {
+                new FancyGifDialog.Builder(this)
+                        .setTitle("Do you want to Sign-Out?") // You can also send title like R.string.from_resources
+                        .setMessage("By Pressing SIGN-OUT you will not be able to use our services.") // or pass like R.string.description_from_resources
+                        .setTitleTextColor(R.color.titleText)
+                        .setDescriptionTextColor(R.color.descriptionText)
+                        .setNegativeBtnText("Cancel") // or pass it like android.R.string.cancel
+                        .setPositiveBtnBackground(R.color.positiveButton)
+                        .setPositiveBtnText("SIGN OUT") // or pass it like android.R.string.ok
+                        .setNegativeBtnBackground(R.color.negativeButton)
+                        .setGifResource(R.drawable.giflogoutmessage)   //Pass your Gif here
+                        .isCancellable(true)
+                        .OnPositiveClicked(new FancyGifDialogListener() {
+                            @Override
+                            public void OnClick() {
                                 LogOut();
+                                Toast.makeText(CustomerHomePage.this,"Ok",Toast.LENGTH_SHORT).show();
                             }
-                        });
-
-                AlertDialog alert11 = builder1.create();
-                alert11.show();
+                        })
+                        .OnNegativeClicked(new FancyGifDialogListener() {
+                            @Override
+                            public void OnClick() {
+                                Toast.makeText(CustomerHomePage.this,"Cancel",Toast.LENGTH_SHORT).show();
+                            }
+                        })
+                        .build();
                 break;
 //            case R.id.nav_chat:
 //                getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container,

@@ -6,53 +6,45 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
-import android.util.Log;
-import android.view.Gravity;
-import android.view.LayoutInflater;
 import android.view.View;
-import android.widget.Button;
-import android.widget.EditText;
 import android.widget.ImageButton;
-import android.widget.ImageView;
-import android.widget.LinearLayout;
-import android.widget.PopupWindow;
 import android.widget.Toast;
 
 import com.developer.fooddeliveryapp.Customer.CartAdapter.ExampleItemCustomerListCart;
-import com.developer.fooddeliveryapp.Customer.ItemsAdapter.ExampleAdapterListCustomer;
-import com.developer.fooddeliveryapp.Customer.ItemsAdapter.ExampleItemCustomerList;
-import com.developer.fooddeliveryapp.MainActivity;
+import com.developer.fooddeliveryapp.Customer.ItemsInRestaurantAdapter.ExampleAdapterListCustomer;
+import com.developer.fooddeliveryapp.Customer.ItemsInRestaurantAdapter.ExampleItemCustomerList;
 import com.developer.fooddeliveryapp.R;
 import com.developer.fooddeliveryapp.SessionManager;
-import com.developer.fooddeliveryapp.SignInActivity;
-import com.developer.fooddeliveryapp.SignUpActivity;
-import com.developer.fooddeliveryapp.User;
-import com.google.android.material.button.MaterialButton;
-import com.google.android.material.textfield.TextInputEditText;
-import com.google.firebase.auth.FirebaseAuth;
+import com.developer.fooddeliveryapp.SharedPrefList;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
+import com.shashank.sony.fancygifdialoglib.FancyGifDialog;
+import com.shashank.sony.fancygifdialoglib.FancyGifDialogListener;
 
+import java.lang.reflect.Type;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
+import java.util.List;
 
 public class RestaurantItems extends AppCompatActivity {
     private RecyclerView mRecyclerView;
-    private ExampleAdapterListCustomer mAdapter;
+    private static ExampleAdapterListCustomer mAdapter;
     private RecyclerView.LayoutManager mLayoutManager;
-    DatabaseReference GetUid;
-    String email;
-    String password, mobileNo;
+
     ImageButton buttonBack;
     ImageButton order;
 
     ArrayList<ExampleItemCustomerList> list = new ArrayList<>();
 
-    DatabaseReference add;
+    private List<ExampleItemCustomerListCart> taskList=new ArrayList<>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -60,14 +52,10 @@ public class RestaurantItems extends AppCompatActivity {
         setContentView(R.layout.activity_restaurant_items);
         order=findViewById(R.id.btnOrder);
         buttonBack=findViewById(R.id.btnBack);
-        createExampleList();
 
-        buttonBack.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                onBackPressed();
-            }
-        });
+        taskList = SharedPrefList.readListFromPref(this);
+        if (taskList == null)
+            taskList = new ArrayList<>();
 
 
         SessionManager session = new SessionManager(getApplicationContext());
@@ -86,46 +74,35 @@ public class RestaurantItems extends AppCompatActivity {
 
         String mobNoCustomer=intent.getStringExtra("mobileNumberCustomer");
 
+        createExampleList(mobNoCustomer);
 
+        buttonBack.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                SharedPrefList.deleteInPref(getApplicationContext());
+                onBackPressed();
+            }
+        });
 
-        add=FirebaseDatabase.getInstance().getReference("users").child("Customer").child("Cart").child(mobNoCustomer);
 
         order.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent1=new Intent(getApplicationContext(),ViewOrder.class);
-                intent1.putExtra("mobileNo",mobNoCustomer);
-                startActivity(intent1);
+                SharedPrefList.writeListInPref(getApplicationContext(), taskList);
+                startActivity(new Intent(getApplicationContext(),ViewOrder.class));
             }
         });
         Toast.makeText(getApplicationContext(), mobNo, Toast.LENGTH_SHORT).show();
     }
-    public void createExampleList() {
+
+
+    public void createExampleList(String mobNoCustomer) {
         Intent intent = getIntent();
         String mobNo = intent.getStringExtra("mobNo");
 
-//        Toast.makeText(getApplicationContext(), "InIt", Toast.LENGTH_SHORT).show();
-
-//        String uid = FirebaseAuth.getInstance().getCurrentUser().getUid();
-
-//        GetUid = FirebaseDatabase.getInstance().getReference("users").child("all").child("uid").child(uid);
-//
-//        GetUid.addListenerForSingleValueEvent(new ValueEventListener() {
-//            @Override
-//            public void onDataChange(@NonNull DataSnapshot snapshot) {
-//                email = snapshot.child("email").getValue(String.class);
-//                password = snapshot.child("password").getValue(String.class);
-//                mobileNo = snapshot.child("mobileNo").getValue(String.class);
-//            }
-//
-//            @Override
-//            public void onCancelled(@NonNull DatabaseError error) {
-//
-//            }
-//        });
-
-
         DatabaseReference db = FirebaseDatabase.getInstance().getReference("users").child("Restaurant").child(mobNo).child("items");
+        DatabaseReference add=FirebaseDatabase.getInstance().getReference("users").child("Customer").child("Cart").child(mobNoCustomer);
+
 
         mRecyclerView = findViewById(R.id.recyclerViewListItems);
         mRecyclerView.setHasFixedSize(true);
@@ -135,14 +112,11 @@ public class RestaurantItems extends AppCompatActivity {
         db.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
-                list.clear();
                 for (DataSnapshot dataSnapshot1 : snapshot.getChildren()) {
                     ExampleItemCustomerList p = dataSnapshot1.getValue(ExampleItemCustomerList.class);
                     list.add(p);
                 }
-
                 mAdapter = new ExampleAdapterListCustomer(list);
-
 
                 mRecyclerView.setLayoutManager(mLayoutManager);
                 mRecyclerView.setAdapter(mAdapter);
@@ -156,7 +130,12 @@ public class RestaurantItems extends AppCompatActivity {
                         add.addValueEventListener(new ValueEventListener() {
                             @Override
                             public void onDataChange(@NonNull DataSnapshot snapshot) {
-                                writeNewCart(exampleItemCustomerList.getText1(),exampleItemCustomerList.getText2(),"1");
+                                ExampleItemCustomerListCart exampleItemCustomerListCart=new ExampleItemCustomerListCart();
+                                exampleItemCustomerListCart.setText1(exampleItemCustomerList.getText1());
+                                exampleItemCustomerListCart.setText2(exampleItemCustomerList.getText2());
+                                exampleItemCustomerListCart.setQuantity(exampleItemCustomerList.getQuantity());
+
+                                taskList.add(exampleItemCustomerListCart);
                             }
 
                             @Override
@@ -166,7 +145,6 @@ public class RestaurantItems extends AppCompatActivity {
                         });
                     }
                 });
-
             }
 
             @Override
@@ -174,16 +152,37 @@ public class RestaurantItems extends AppCompatActivity {
 
             }
         });
-    }
 
-    private void writeNewCart(String itemName, String itemPrice,String quantity) {
-        ExampleItemCustomerList customerList = new ExampleItemCustomerList(R.drawable.paneer,itemName,itemPrice,quantity);
-        add.child(itemName).setValue(customerList);
-        Toast.makeText(getApplicationContext(), "Data Send Successfully IN rESTRAUNT", Toast.LENGTH_SHORT).show();
+
     }
 
     @Override
     public void onBackPressed() {
-        super.onBackPressed();
+        new FancyGifDialog.Builder(this)
+                .setTitle("Are you sure you want to go back ?") // You can also send title like R.string.from_resources
+                .setMessage("By Pressing OK your cart data will be removed.") // or pass like R.string.description_from_resources
+                .setTitleTextColor(R.color.titleText)
+                .setDescriptionTextColor(R.color.descriptionText)
+                .setNegativeBtnText("Cancel") // or pass it like android.R.string.cancel
+                .setPositiveBtnBackground(R.color.positiveButton)
+                .setPositiveBtnText("Ok") // or pass it like android.R.string.ok
+                .setNegativeBtnBackground(R.color.negativeButton)
+                .setGifResource(R.drawable.giflogout)   //Pass your Gif here
+                .isCancellable(true)
+                .OnPositiveClicked(new FancyGifDialogListener() {
+                    @Override
+                    public void OnClick() {
+                        startActivity(new Intent(getApplicationContext(),CustomerHomePage.class));
+                        Toast.makeText(RestaurantItems.this,"Ok",Toast.LENGTH_SHORT).show();
+                    }
+                })
+                .OnNegativeClicked(new FancyGifDialogListener() {
+                    @Override
+                    public void OnClick() {
+                        Toast.makeText(RestaurantItems.this,"Cancel",Toast.LENGTH_SHORT).show();
+                    }
+                })
+                .build();
     }
+
 }
