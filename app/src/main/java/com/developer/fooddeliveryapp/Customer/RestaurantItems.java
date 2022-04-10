@@ -10,6 +10,7 @@ import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.ImageButton;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.developer.fooddeliveryapp.Customer.CartAdapter.ExampleItemCustomerListCart;
@@ -41,6 +42,7 @@ public class RestaurantItems extends AppCompatActivity {
 
     ImageButton buttonBack;
     ImageButton order;
+    TextView restaurantNameTv;
 
     ArrayList<ExampleItemCustomerList> list = new ArrayList<>();
 
@@ -52,6 +54,8 @@ public class RestaurantItems extends AppCompatActivity {
         setContentView(R.layout.activity_restaurant_items);
         order=findViewById(R.id.btnOrder);
         buttonBack=findViewById(R.id.btnBack);
+        restaurantNameTv=findViewById(R.id.restaurantName);
+
 
         taskList = SharedPrefList.readListFromPref(this);
         if (taskList == null)
@@ -71,10 +75,15 @@ public class RestaurantItems extends AppCompatActivity {
 
         Intent intent=getIntent();
         String mobNo=intent.getStringExtra("mobNo");
+        String restaurantName=intent.getStringExtra("restaurantName");
 
-        String mobNoCustomer=intent.getStringExtra("mobileNumberCustomer");
+        restaurantNameTv.setText(restaurantName);
 
-        createExampleList(mobNoCustomer);
+
+//        Toast.makeText(getApplicationContext(), restaurantName, Toast.LENGTH_SHORT).show();
+//        String mobNoCustomer=intent.getStringExtra("mobileNumberCustomer");
+
+        createExampleList(mobileNo);
 
         buttonBack.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -89,7 +98,9 @@ public class RestaurantItems extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 SharedPrefList.writeListInPref(getApplicationContext(), taskList);
-                startActivity(new Intent(getApplicationContext(),ViewOrder.class));
+                Intent intent1=new Intent(getApplicationContext(),ViewOrder.class);
+                intent1.putExtra("restaurantName",restaurantName);
+                startActivity(intent1);
             }
         });
         Toast.makeText(getApplicationContext(), mobNo, Toast.LENGTH_SHORT).show();

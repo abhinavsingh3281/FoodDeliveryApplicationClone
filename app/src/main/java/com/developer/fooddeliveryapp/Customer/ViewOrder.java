@@ -1,6 +1,7 @@
 package com.developer.fooddeliveryapp.Customer;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -9,6 +10,7 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -21,6 +23,9 @@ import com.developer.fooddeliveryapp.Customer.CartAdapter.ExampleAdapterListCust
 import com.developer.fooddeliveryapp.Customer.CartAdapter.ExampleItemCustomerListCart;
 import com.developer.fooddeliveryapp.Customer.ItemsInRestaurantAdapter.ExampleAdapterListCustomer;
 import com.developer.fooddeliveryapp.Customer.ItemsInRestaurantAdapter.ExampleItemCustomerList;
+import com.developer.fooddeliveryapp.Customer.Payment.FailurePaymentPage;
+import com.developer.fooddeliveryapp.Customer.Payment.SuccessfulPaymentPage;
+import com.developer.fooddeliveryapp.Notification.SendNotif;
 import com.developer.fooddeliveryapp.R;
 import com.developer.fooddeliveryapp.SessionManager;
 import com.developer.fooddeliveryapp.SharedPrefList;
@@ -39,6 +44,8 @@ import com.shashank.sony.fancygifdialoglib.FancyGifDialogListener;
 import org.json.JSONObject;
 
 import java.lang.reflect.Type;
+import java.time.LocalDate;
+import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -50,15 +57,13 @@ public class ViewOrder extends AppCompatActivity implements PaymentResultListene
     private RecyclerView.LayoutManager mLayoutManager;
 
     List<ExampleItemCustomerListCart> list = new ArrayList<>();
-
     ImageButton buttonBack;
     TextView orderTotal;
     Button payment;
 
+    String restaurantName;
     int total;
     String mobNo;
-
-
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -77,8 +82,6 @@ public class ViewOrder extends AppCompatActivity implements PaymentResultListene
         buttonBack.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-//                SharedPrefList.deleteInPref(getApplicationContext());
-//                list = new ArrayList<>();
                 onBackPressed();
             }
         });
@@ -92,7 +95,8 @@ public class ViewOrder extends AppCompatActivity implements PaymentResultListene
         String email = user.get("email").toString();
         String name = user.get("name").toString();
 
-
+        Intent intent=getIntent();
+        restaurantName=intent.getStringExtra("restaurantName");
         createExampleList();
 
         Toast.makeText(getApplicationContext(), mobNo, Toast.LENGTH_SHORT).show();
@@ -101,6 +105,7 @@ public class ViewOrder extends AppCompatActivity implements PaymentResultListene
             @Override
             public void onClick(View v) {
                 makepayment();
+//                startActivity(new Intent(getApplicationContext(), SendNotif.class));
             }
         });
 
@@ -186,21 +191,41 @@ public class ViewOrder extends AppCompatActivity implements PaymentResultListene
     }
 
 
+    @RequiresApi(api = Build.VERSION_CODES.O)
     @Override
     public void onPaymentSuccess(String s)
     {
-        DatabaseReference db= FirebaseDatabase.getInstance().getReference("users").child("Customer").child("Cart").child(mobNo);
-        orderTotal.setText("Successful payment ID :"+s);
+        for (int i=0;i<list.size();i++)
+        {
+            ExampleItemCustomerListCart item = list.get(i);
+            writeOrdersDetails(item.getText1(), item.getText2(), item.getQuantity());
+        }
+        SharedPrefList.deleteInPref(getApplicationContext());
+        Intent intent=new Intent(getApplicationContext(), SuccessfulPaymentPage.class);
+        intent.putExtra("id",s);
+        startActivity(intent);
     }
 
     @Override
     public void onPaymentError(int i, String s) {
-        orderTotal.setText("Failed and cause is :"+s);
+        SharedPrefList.deleteInPref(getApplicationContext());
+        Intent intent=new Intent(getApplicationContext(), FailurePaymentPage.class);
+        intent.putExtra("id",s);
+        startActivity(intent);
     }
-//
-////    private void writeItemDetails(String itemName,String itemPrice,String quantity) {
-////        DatabaseReference db=FirebaseDatabase.getInstance().getReference("users").child("Customer").child("Cart").child(mobNo);
-////        ExampleItemCustomerListCart item = new ExampleItemCustomerListCart(itemName,itemPrice,quantity);
-////        db.child(itemName).setValue(item);
-////    }
+
+    @RequiresApi(api = Build.VERSION_CODES.O)
+    private void writeOrdersDetails(String itemName, String itemPrice, String quantity) {
+//        String dateAndTime=LocalDate.now()+"-"+UUID.randomUUID().toString();
+        DatabaseReference db= FirebaseDatabase.getInstance().getReference("users").child("Customer").child("Orders").child(mobNo).child(restaurantName).child(UUID.randomUUID().toString());
+        ExampleItemCustomerListCart item = new ExampleItemCustomerListCart(itemName,itemPrice,quantity);
+        db.child(itemName).setValue(item);
+    }
+
+    @Override
+    public void onBackPressed()
+    {
+        super.onBackPressed();
+    }
+
 }

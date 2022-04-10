@@ -57,7 +57,6 @@ public class CustomerHomePage extends AppCompatActivity implements NavigationVie
 
     ArrayList<ExampleItemCustomer> list = new ArrayList<>();
 
-    GifImageButton viewCart;
 
     DrawerLayout drawerLayout;
 
@@ -69,14 +68,6 @@ public class CustomerHomePage extends AppCompatActivity implements NavigationVie
         pinCode=findViewById(R.id.customerPinCode);
         checkPin=findViewById(R.id.btnCustomerPinCode);
 
-        viewCart=findViewById(R.id.toolbarViewCart);
-
-//        viewCart.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View v) {
-//                startActivity(new Intent(CustomerHomePage.this,ViewOrder.class));
-//            }
-//        });
 
         uid = FirebaseAuth.getInstance().getCurrentUser().getUid();
 
@@ -118,7 +109,7 @@ public class CustomerHomePage extends AppCompatActivity implements NavigationVie
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(this, drawerLayout, toolbar,
                 R.string.nav_open, R.string.nav_close);
         drawerLayout.addDrawerListener(toggle);
-//        drawerLayout.setFitsSystemWindows(true);
+
         toggle.syncState();
 
         checkPin.setOnClickListener(new View.OnClickListener() {
@@ -193,9 +184,6 @@ public class CustomerHomePage extends AppCompatActivity implements NavigationVie
         mRecyclerView.setHasFixedSize(true);
         mLayoutManager = new LinearLayoutManager(this);
 
-
-
-
         db.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
@@ -214,7 +202,7 @@ public class CustomerHomePage extends AppCompatActivity implements NavigationVie
                         ExampleItemCustomer exampleItemCustomer=list.get(position);
                         Intent intent1=new Intent(getApplicationContext(),RestaurantItems.class);
                         intent1.putExtra("mobNo",exampleItemCustomer.getMobileNo());
-                        intent1.putExtra("mobileNumberCustomer",mobileNo);
+                        intent1.putExtra("restaurantName",exampleItemCustomer.getRestaurantName());
                         startActivity(intent1);
                     }
                 });

@@ -1,22 +1,25 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.developer.fooddeliveryapp" >
+    package="com.developer.fooddeliveryapp">
 
     <uses-permission android:name="android.permission.INTERNET" />
 
     <application
         android:allowBackup="true"
-        android:icon="@mipmap/ic_launcher"
+        android:icon="@drawable/applogo"
         android:label="@string/app_name"
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
-        android:theme="@style/Theme.FoodDeliveryApp" >
+        android:theme="@style/Theme.FoodDeliveryApp">
+        <activity
+            android:name=".Customer.Payment.FailurePaymentPage"
+            android:exported="false" />
         <activity
             android:name=".SignInAndUp.SignUp.SignUpRestaurant"
             android:exported="false" />
         <activity
             android:name=".SignInAndUp.SplashActivity"
-            android:exported="true" >
+            android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -46,10 +49,13 @@
             android:exported="true" />
         <activity
             android:name=".SignInAndUp.SignInActivity"
-            android:exported="true" >
-        </activity>
+            android:exported="true"></activity>
         <activity
             android:name=".SignInAndUp.SignUp.SignUpMainActivity"
+            android:exported="true" />
+
+        <activity
+            android:name=".Notification.SendNotif"
             android:exported="true" />
 
         <meta-data
@@ -60,7 +66,7 @@
             android:name="com.razorpay.CheckoutActivity"
             android:configChanges="keyboard|keyboardHidden|orientation|screenSize"
             android:exported="true"
-            android:theme="@style/CheckoutTheme" >
+            android:theme="@style/CheckoutTheme">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -69,10 +75,25 @@
                     android:scheme="io.rzp" />
             </intent-filter>
         </activity>
-
+        <service
+            android:name=".Notification.MyFireBaseMessagingService"
+            android:enabled="true"
+            android:exported="true">
+            <intent-filter>
+                <action android:name="com.google.firebase.MESSAGING_EVENT" />
+            </intent-filter>
+        </service>
+        <service
+            android:name=".Notification.MyFirebaseIdService"
+            android:enabled="true"
+            android:exported="true">
+            <intent-filter>
+                <action android:name="com.google.firebase.INSTANCE_ID_EVENT" />
+            </intent-filter>
+        </service>
         <receiver
             android:name="com.razorpay.RzpTokenReceiver"
-            android:exported="false" >
+            android:exported="false">
             <intent-filter>
                 <action android:name="rzp.device_token.share" />
             </intent-filter>

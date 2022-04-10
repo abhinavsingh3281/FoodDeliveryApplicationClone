@@ -5,6 +5,7 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
@@ -12,20 +13,25 @@ import android.widget.Button;
 import android.widget.Toast;
 
 import com.developer.fooddeliveryapp.Customer.CustomerHomePage;
+import com.developer.fooddeliveryapp.Notification.Token;
 import com.developer.fooddeliveryapp.R;
 import com.developer.fooddeliveryapp.Restraunt.RestaurantHomePage;
 import com.developer.fooddeliveryapp.SessionManager;
 import com.developer.fooddeliveryapp.SignInAndUp.SignUp.SignUpMainActivity;
 import com.developer.fooddeliveryapp.User;
+import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.android.gms.tasks.Task;
 import com.google.android.material.textfield.TextInputEditText;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+import com.google.firebase.messaging.FirebaseMessaging;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -86,11 +92,29 @@ public class SignInActivity extends AppCompatActivity {
                     @Override
                     public void onClick(View v) {
                         getData(mobileNo.getText().toString());
+//                        SetToken();
                     }
                 });
             }
 
         }
+
+    private void SetToken(String uid){
+        final String[] refreshToken = {null};
+        FirebaseMessaging.getInstance().getToken().addOnCompleteListener(new OnCompleteListener<String>() {
+            @Override
+            public void onComplete(@NonNull Task<String> task) {
+                if(task.isComplete()){
+                    refreshToken[0] = task.getResult();
+                    Toast.makeText(getApplicationContext(),"Token"+ refreshToken[0], Toast.LENGTH_LONG).show();
+                    Token token=new Token(refreshToken[0]);
+                    FirebaseDatabase.getInstance().getReference().child("Tokens").child(uid).setValue(token);
+                    Log.e("AppConstants", "onComplete: new Token got: "+refreshToken[0] );
+                }
+            }
+        });
+//        Toast.makeText(getApplicationContext(),"Token"+ refreshToken[0], Toast.LENGTH_LONG).show();
+    }
     private void getData(String mobileNo) {
         String s=spinner.getText().toString();
         firebaseDatabase = FirebaseDatabase.getInstance();
@@ -112,7 +136,7 @@ public class SignInActivity extends AppCompatActivity {
                     public void onSuccess(AuthResult authResult) {
 
                         writeNewUserWithUid(name,email,mobileNo,password,FirebaseAuth.getInstance().getCurrentUser().getUid().toString(),s);
-
+                        SetToken(FirebaseAuth.getInstance().getCurrentUser().getUid());
                         SessionManager session = new SessionManager(getApplicationContext());
                         session.createLoginSession(FirebaseAuth.getInstance().getCurrentUser().getUid().toString(),s.trim().toString(),mobileNo,image,name,email,address,pincode);
                         if (s.equals("Customer"))
@@ -120,12 +144,14 @@ public class SignInActivity extends AppCompatActivity {
                             Intent intent=new Intent(getApplicationContext(), CustomerHomePage.class);
                             intent.putExtra("mobileNo",mobileNo);
                             intent.putExtra("uid",FirebaseAuth.getInstance().getCurrentUser().getUid().toString());
+//                            SetToken();
                             startActivity(intent);
                         }
                         else{
                             Intent intent=new Intent(getApplicationContext(),RestaurantHomePage.class);
                             intent.putExtra("mobileNo",mobileNo);
                             intent.putExtra("uid",FirebaseAuth.getInstance().getCurrentUser().getUid().toString());
+//                            SetToken();
                             startActivity(intent);
                         }
                     }
@@ -164,4 +190,6 @@ public class SignInActivity extends AppCompatActivity {
 
         return users;
     }
+
+
 }

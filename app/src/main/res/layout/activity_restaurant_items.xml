@@ -25,16 +25,17 @@
             app:iconGravity="top"
             />
         <TextView
-            android:id="@+id/textView"
+            android:id="@+id/restaurantName"
             android:text="Item 1"
             android:layout_weight="2"
-            android:layout_width="250dp"
+            android:layout_width="230dp"
+            android:textStyle="bold"
             android:layout_height="wrap_content"
-            android:layout_marginTop="5dp"
-            android:textSize="20sp"
+            android:layout_marginTop="2.5dp"
+            android:textSize="25dp"
             android:layout_gravity="center"
             android:textColor="@color/black"
-            android:layout_marginLeft="15dp"/>
+            android:layout_marginLeft="5dp"/>
 
         <ImageButton
             android:id="@+id/btnOrder"
