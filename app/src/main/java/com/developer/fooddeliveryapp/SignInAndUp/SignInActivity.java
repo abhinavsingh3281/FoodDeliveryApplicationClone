@@ -138,18 +138,20 @@ public class SignInActivity extends AppCompatActivity {
                         writeNewUserWithUid(name,email,mobileNo,password,FirebaseAuth.getInstance().getCurrentUser().getUid().toString(),s);
                         SetToken(FirebaseAuth.getInstance().getCurrentUser().getUid());
                         SessionManager session = new SessionManager(getApplicationContext());
-                        session.createLoginSession(FirebaseAuth.getInstance().getCurrentUser().getUid().toString(),s.trim().toString(),mobileNo,image,name,email,address,pincode);
                         if (s.equals("Customer"))
                         {
                             Intent intent=new Intent(getApplicationContext(), CustomerHomePage.class);
                             intent.putExtra("mobileNo",mobileNo);
+                            session.createLoginSession(FirebaseAuth.getInstance().getCurrentUser().getUid().toString(),s.trim().toString(),mobileNo,image,name,email,address,pincode);
                             intent.putExtra("uid",FirebaseAuth.getInstance().getCurrentUser().getUid().toString());
 //                            SetToken();
                             startActivity(intent);
                         }
                         else{
                             Intent intent=new Intent(getApplicationContext(),RestaurantHomePage.class);
+                            String restaurantName=snapshot.child("restaurantName").getValue(String.class);
                             intent.putExtra("mobileNo",mobileNo);
+                            session.createLoginSession(FirebaseAuth.getInstance().getCurrentUser().getUid().toString(),s.trim().toString(),mobileNo,image,name,email,address,pincode,restaurantName);
                             intent.putExtra("uid",FirebaseAuth.getInstance().getCurrentUser().getUid().toString());
 //                            SetToken();
                             startActivity(intent);

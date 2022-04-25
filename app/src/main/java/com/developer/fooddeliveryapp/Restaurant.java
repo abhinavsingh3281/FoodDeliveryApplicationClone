@@ -1,62 +1,39 @@
 package com.developer.fooddeliveryapp;
 
-public class User {
+public class Restaurant {
 
+    private String image;
     private String name;
     private String email;
     private String mobileNo;
     private String password;
     private String role;
+    private String restaurantName;
     private String address;
     private String pinCode;
-    private String image;
+    private String gstNo;
     private String uid;
 
-
-    public User(String name, String email, String mobileNo, String password) {
-        this.name = name;
-        this.email = email;
-        this.mobileNo = mobileNo;
-        this.password = password;
-    }
-
-    public User(String name, String email, String mobileNo, String password, String role) {
-        this.name = name;
-        this.email = email;
-        this.mobileNo = mobileNo;
-        this.password = password;
-        this.role = role;
-    }
-
-    public User(String name, String email, String mobileNo, String password, String role, String address, String pinCode,String image) {
-        this.name = name;
-        this.email = email;
-        this.mobileNo = mobileNo;
-        this.password = password;
-        this.role = role;
-        this.address = address;
-        this.pinCode = pinCode;
-        this.image=image;
-    }
-
-    public User(String name, String email, String mobileNo, String password, String role, String address, String pinCode, String image, String uid) {
-        this.name = name;
-        this.email = email;
-        this.mobileNo = mobileNo;
-        this.password = password;
-        this.role = role;
-        this.address = address;
-        this.pinCode = pinCode;
+    public Restaurant(String image, String name, String email, String mobileNo, String password, String role, String restaurantName, String address, String pinCode, String gstNo, String uid) {
         this.image = image;
+        this.name = name;
+        this.email = email;
+        this.mobileNo = mobileNo;
+        this.password = password;
+        this.role = role;
+        this.restaurantName = restaurantName;
+        this.address = address;
+        this.pinCode = pinCode;
+        this.gstNo = gstNo;
         this.uid = uid;
     }
 
-    public String getUid() {
-        return uid;
+    public String getImage() {
+        return image;
     }
 
-    public void setUid(String uid) {
-        this.uid = uid;
+    public void setImage(String image) {
+        this.image = image;
     }
 
     public String getName() {
@@ -95,6 +72,18 @@ public class User {
         return role;
     }
 
+    public void setRole(String role) {
+        this.role = role;
+    }
+
+    public String getRestaurantName() {
+        return restaurantName;
+    }
+
+    public void setRestaurantName(String restaurantName) {
+        this.restaurantName = restaurantName;
+    }
+
     public String getAddress() {
         return address;
     }
@@ -111,15 +100,19 @@ public class User {
         this.pinCode = pinCode;
     }
 
-    public void setRole(String role) {
-        this.role = role;
+    public String getGstNo() {
+        return gstNo;
     }
 
-    public String getImage() {
-        return image;
+    public void setGstNo(String gstNo) {
+        this.gstNo = gstNo;
     }
 
-    public void setImage(String image) {
-        this.image = image;
+    public String getUid() {
+        return uid;
+    }
+
+    public void setUid(String uid) {
+        this.uid = uid;
     }
 }

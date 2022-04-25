@@ -20,7 +20,7 @@
             android:layout_height="50dp"
             android:gravity="right"
             android:layout_marginTop="10dp"
-            android:layout_marginRight="15dp"
+            android:layout_marginRight="5dp"
             android:src="@drawable/ic_back"
             app:iconGravity="top"
             />
@@ -31,11 +31,10 @@
             android:layout_width="230dp"
             android:textStyle="bold"
             android:layout_height="wrap_content"
-            android:layout_marginTop="2.5dp"
-            android:textSize="25dp"
+            android:layout_marginTop="4.5dp"
+            android:textSize="20dp"
             android:layout_gravity="center"
-            android:textColor="@color/black"
-            android:layout_marginLeft="5dp"/>
+            android:textColor="@color/black" />
 
         <ImageButton
             android:id="@+id/btnOrder"

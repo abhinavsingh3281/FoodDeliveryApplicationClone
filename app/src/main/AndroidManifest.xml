@@ -12,6 +12,18 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.FoodDeliveryApp">
         <activity
+            android:name=".Restraunt.ViewAllMyOrdersRestaurant"
+            android:exported="false" />
+        <activity
+            android:name=".Restraunt.ViewDetailedPendingRequest"
+            android:exported="false" />
+        <activity
+            android:name=".Restraunt.ViewAllPendingRequestRestaurant"
+            android:exported="false" />
+        <activity
+            android:name=".Customer.ViewMyOrders"
+            android:exported="false" />
+        <activity
             android:name=".Customer.Payment.FailurePaymentPage"
             android:exported="false" />
         <activity
@@ -49,11 +61,10 @@
             android:exported="true" />
         <activity
             android:name=".SignInAndUp.SignInActivity"
-            android:exported="true"></activity>
+            android:exported="true" />
         <activity
             android:name=".SignInAndUp.SignUp.SignUpMainActivity"
             android:exported="true" />
-
         <activity
             android:name=".Notification.SendNotif"
             android:exported="true" />
@@ -75,6 +86,7 @@
                     android:scheme="io.rzp" />
             </intent-filter>
         </activity>
+
         <service
             android:name=".Notification.MyFireBaseMessagingService"
             android:enabled="true"
@@ -91,6 +103,7 @@
                 <action android:name="com.google.firebase.INSTANCE_ID_EVENT" />
             </intent-filter>
         </service>
+
         <receiver
             android:name="com.razorpay.RzpTokenReceiver"
             android:exported="false">

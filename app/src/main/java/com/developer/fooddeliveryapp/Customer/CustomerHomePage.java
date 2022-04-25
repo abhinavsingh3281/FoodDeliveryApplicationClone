@@ -152,14 +152,9 @@ public class CustomerHomePage extends AppCompatActivity implements NavigationVie
                         })
                         .build();
                 break;
-//            case R.id.nav_chat:
-//                getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container,
-//                        new ChatFragment()).commit();
-//                break;
-//            case R.id.nav_profile:
-//                getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container,
-//                        new ProfileFragment()).commit();
-//                break;
+            case R.id.nav_orders:
+                startActivity(new Intent(getApplicationContext(),ViewMyOrders.class));
+                break;
 //            case R.id.nav_share:
 //                Toast.makeText(this, "Share", Toast.LENGTH_SHORT).show();
 //                break;

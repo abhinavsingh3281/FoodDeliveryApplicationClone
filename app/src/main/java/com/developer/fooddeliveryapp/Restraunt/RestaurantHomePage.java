@@ -4,7 +4,6 @@ import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.ActionBarDrawerToggle;
-import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.core.view.GravityCompat;
@@ -12,7 +11,6 @@ import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -30,6 +28,7 @@ import android.widget.FrameLayout;
 import android.widget.LinearLayout;
 import android.widget.PopupWindow;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.developer.fooddeliveryapp.R;
 import com.developer.fooddeliveryapp.SessionManager;
@@ -43,6 +42,8 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.makeramen.roundedimageview.RoundedImageView;
+import com.shashank.sony.fancygifdialoglib.FancyGifDialog;
+import com.shashank.sony.fancygifdialoglib.FancyGifDialogListener;
 
 import java.io.ByteArrayOutputStream;
 import java.io.FileNotFoundException;
@@ -90,6 +91,10 @@ public class RestaurantHomePage extends AppCompatActivity implements NavigationV
         String email=user.get("email").toString();
         String name=user.get("name").toString();
 
+        byte [] bytes= Base64.decode(image,Base64.DEFAULT);
+        Bitmap bitmap= BitmapFactory.decodeByteArray(bytes,0, bytes.length);
+
+
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
@@ -97,10 +102,33 @@ public class RestaurantHomePage extends AppCompatActivity implements NavigationV
         NavigationView navigationView = findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
 
+        View headerView = navigationView.getHeaderView(0);
+        TextView navUsername = (TextView) headerView.findViewById(R.id.header_name);
+        TextView navEmail = (TextView) headerView.findViewById(R.id.header_email);
+        RoundedImageView imageView=(RoundedImageView) headerView.findViewById(R.id.header_image);
+        imageView.setImageBitmap(bitmap);
+        navUsername.setText(name);
+        navEmail.setText(email);
+
+
+
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(this, drawerLayout, toolbar,
                 R.string.nav_open, R.string.nav_close);
         drawerLayout.addDrawerListener(toggle);
+
         toggle.syncState();
+
+//        Toolbar toolbar = findViewById(R.id.toolbar);
+//        setSupportActionBar(toolbar);
+//
+//        drawerLayout = findViewById(R.id.drawer_layout);
+//        NavigationView navigationView = findViewById(R.id.nav_view);
+//        navigationView.setNavigationItemSelectedListener(this);
+//
+//        ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(this, drawerLayout, toolbar,
+//                R.string.nav_open, R.string.nav_close);
+//        drawerLayout.addDrawerListener(toggle);
+//        toggle.syncState();
 
         createExampleList();
         setButtons();
@@ -110,20 +138,39 @@ public class RestaurantHomePage extends AppCompatActivity implements NavigationV
     public boolean onNavigationItemSelected(@NonNull MenuItem item) {
         switch (item.getItemId()) {
             case R.id.nav_logout:
-                AlertDialog.Builder builder1 = new AlertDialog.Builder(RestaurantHomePage.this);
-                builder1.setMessage("Do you want to Log Out");
-                builder1.setCancelable(true);
-
-                builder1.setPositiveButton(
-                        "OK",
-                        new DialogInterface.OnClickListener() {
-                            public void onClick(DialogInterface dialog, int id) {
+                new FancyGifDialog.Builder(this)
+                        .setTitle("Do you want to Sign-Out?") // You can also send title like R.string.from_resources
+                        .setMessage("By Pressing SIGN-OUT you will not be able to use our services.") // or pass like R.string.description_from_resources
+                        .setTitleTextColor(R.color.titleText)
+                        .setDescriptionTextColor(R.color.descriptionText)
+                        .setNegativeBtnText("Cancel") // or pass it like android.R.string.cancel
+                        .setPositiveBtnBackground(R.color.positiveButton)
+                        .setPositiveBtnText("SIGN OUT") // or pass it like android.R.string.ok
+                        .setNegativeBtnBackground(R.color.negativeButton)
+                        .setGifResource(R.drawable.giflogoutmessage)   //Pass your Gif here
+                        .isCancellable(true)
+                        .OnPositiveClicked(new FancyGifDialogListener() {
+                            @Override
+                            public void OnClick() {
                                 LogOut();
+                                Toast.makeText(getApplicationContext(),"Ok",Toast.LENGTH_SHORT).show();
                             }
-                        });
-
-                AlertDialog alert11 = builder1.create();
-                alert11.show();
+                        })
+                        .OnNegativeClicked(new FancyGifDialogListener() {
+                            @Override
+                            public void OnClick() {
+                                Toast.makeText(getApplicationContext(),"Cancel",Toast.LENGTH_SHORT).show();
+                            }
+                        })
+                        .build();
+                break;
+            case R.id.nav_orders:
+                startActivity(new Intent(getApplicationContext(), ViewAllMyOrdersRestaurant.class));
+                Toast.makeText(this, "TAP", Toast.LENGTH_SHORT).show();
+                break;
+            case  R.id.nav_pending_orders:
+                Toast.makeText(this, "TAP PENDING", Toast.LENGTH_SHORT).show();
+                startActivity(new Intent(getApplicationContext(), ViewAllPendingRequestRestaurant.class));
                 break;
         }
 

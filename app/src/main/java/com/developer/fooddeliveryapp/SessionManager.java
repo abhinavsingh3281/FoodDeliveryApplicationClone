@@ -132,7 +132,7 @@ public class SessionManager {
         user.put("name",sharedPrefer.getString(KEY_NAME,null));
         user.put("address",sharedPrefer.getString(KEY_ADDRESS,null));
         user.put("pincode",sharedPrefer.getString(KEY_PINCODE,null));
-        user.put("restaurantName",sharedPrefer.getString(KEY_PINCODE,null));
+        user.put("restaurantName",sharedPrefer.getString(KEY_RESTAURANT_NAME,null));
 
         return user;
     }

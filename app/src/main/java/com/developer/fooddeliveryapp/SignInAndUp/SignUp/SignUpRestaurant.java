@@ -23,7 +23,9 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.developer.fooddeliveryapp.Customer.CustomerHomePage;
+import com.developer.fooddeliveryapp.Notification.Token;
 import com.developer.fooddeliveryapp.R;
+import com.developer.fooddeliveryapp.Restaurant;
 import com.developer.fooddeliveryapp.Restraunt.RestaurantHomePage;
 import com.developer.fooddeliveryapp.SessionManager;
 import com.developer.fooddeliveryapp.User;
@@ -38,14 +40,15 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+import com.google.firebase.messaging.FirebaseMessaging;
 import com.makeramen.roundedimageview.RoundedImageView;
 
 import java.io.ByteArrayOutputStream;
 import java.io.FileNotFoundException;
 import java.io.InputStream;
 
-public class SignUpCustomerActivity extends AppCompatActivity {
-    TextInputEditText Email, Pass,name,mobNo,confirmPass,etPinCode,etAddress,etGstNo;
+public class SignUpRestaurant extends AppCompatActivity {
+    TextInputEditText Email, Pass,name,mobNo,confirmPass,etPinCode,etAddress,etGstNo,etRestaurantName;
     Button LoginB;
     FirebaseAuth firebaseAuth;
 
@@ -54,15 +57,13 @@ public class SignUpCustomerActivity extends AppCompatActivity {
     private String encodedImage;
     private RoundedImageView imageProfile;
 
-
-    private DatabaseReference databaseReferenceCustomer;
     private DatabaseReference databaseReferenceAllUsers;
 
 
     private DatabaseReference databaseReferenceRestaurant;
     private DatabaseReference databaseReferencePinCodeRestaurant;
-    
-    String strName, strMob,strEmail,strPassword,userType,pinCode,address,gstNo;
+
+    String strName, strMob,strEmail,strPassword,userType,pinCode,address,restaurantName,gstNo;
 
     FrameLayout frameLayoutImage;
 
@@ -70,32 +71,33 @@ public class SignUpCustomerActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_sign_up_customer);
+        setContentView(R.layout.activity_sign_up_restaurant);
 
-        Email = findViewById(R.id.emailSignUpCustomer);
-        Pass = findViewById(R.id.passSignUpCustomer);
-        LoginB = findViewById(R.id.SignUp);
-        name=findViewById(R.id.nameSignUpCustomer);
-        mobNo=findViewById(R.id.mobileNumberSignUpCustomer);
-        confirmPass=findViewById(R.id.ConfirmPasswordSignUpCustomer);
+        Email = findViewById(R.id.emailSignUpRestaurant);
+        Pass = findViewById(R.id.passSignUpRestaurant);
+        LoginB = findViewById(R.id.SignUpRestaurant);
+        name=findViewById(R.id.nameSignUpRestaurant);
+        mobNo=findViewById(R.id.mobileNumberSignUpRestaurant);
+        confirmPass=findViewById(R.id.ConfirmPasswordSignUpRestaurant);
 
-        etPinCode=findViewById(R.id.pinCodeSignUpCustomer);
-        etAddress=findViewById(R.id.addressSignUpCustomer);
+        etPinCode=findViewById(R.id.pinCodeSignUpRestaurant);
+        etAddress=findViewById(R.id.addressSignUpRestaurant);
 
-        etGstNo=findViewById(R.id.gstNoSignUpCustomer);
+        etGstNo=findViewById(R.id.gstNoSignUpRestaurant);
+        etRestaurantName=findViewById(R.id.restaurantNameSignUpRestaurant);
 
-        imageProfile=findViewById(R.id.imageProfile);
-        textAddImage=findViewById(R.id.textAddImage);
+        imageProfile=findViewById(R.id.imageProfileRestaurant);
+        textAddImage=findViewById(R.id.textAddImageRestaurant);
 
-        frameLayoutImage=findViewById(R.id.layoutImage);
+        frameLayoutImage=findViewById(R.id.layoutImageSignUpRestaurant);
 
 
 
-        databaseReferenceCustomer = FirebaseDatabase.getInstance().getReference("users").child("Customer");
         databaseReferenceAllUsers=FirebaseDatabase.getInstance().getReference("users").child("all").child("allUsersInDatabase");
 
 
         databaseReferenceRestaurant = FirebaseDatabase.getInstance().getReference("users").child("Restaurant");
+
         databaseReferencePinCodeRestaurant = FirebaseDatabase.getInstance().getReference("users").child("Restaurant");
         firebaseAuth= FirebaseAuth.getInstance();
 
@@ -110,22 +112,35 @@ public class SignUpCustomerActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 RegisterDatabase();
-//                Register();
             }
         });
 
 
     }
+    private void SetToken(String uid) {
+        final String[] refreshToken = {null};
+        FirebaseMessaging.getInstance().getToken().addOnCompleteListener(new OnCompleteListener<String>() {
+            @Override
+            public void onComplete(@NonNull Task<String> task) {
+                if (task.isComplete()) {
+                    refreshToken[0] = task.getResult();
+                    Toast.makeText(getApplicationContext(), "Token" + refreshToken[0], Toast.LENGTH_LONG).show();
+                    Token token = new Token(refreshToken[0]);
+                    FirebaseDatabase.getInstance().getReference().child("Tokens").child(uid).setValue(token);
+                    Log.e("AppConstants", "onComplete: new Token got: " + refreshToken[0]);
+                }
+            }
+        });
+    }
 
     private void Register() {
-        Intent intent=getIntent();
-        userType=intent.getStringExtra("userType");
-
         strName=name.getText().toString();
         strEmail= Email.getText().toString();
         strMob=mobNo.getText().toString();
         strPassword= Pass.getText().toString();
-        userType="Customer";
+        restaurantName=etRestaurantName.getText().toString();
+        gstNo=etGstNo.getText().toString();
+        userType="Restaurant";
         pinCode=etPinCode.getText().toString();
         address=etAddress.getText().toString();
 
@@ -137,32 +152,29 @@ public class SignUpCustomerActivity extends AppCompatActivity {
                             Log.d("TAG", "createUserWithEmail:success");
                             FirebaseUser user = firebaseAuth.getCurrentUser();
 
+                            writeNewUser(strName, strEmail, strMob, strPassword, userType, address, pinCode, encodedImage,restaurantName,gstNo,user.getUid());
+                            writeNewUserRestaurant(strName, strEmail, strMob, strPassword, userType, address, pinCode, encodedImage,restaurantName,gstNo,user.getUid());
+
                             SessionManager session = new SessionManager(getApplicationContext());
-                            session.createLoginSession(user.getUid(),userType,strMob,encodedImage,strName,strEmail,address,pinCode);
+                            session.createLoginSession(user.getUid(),userType,strMob,encodedImage,strName,strEmail,address,pinCode,restaurantName);
 
-                            writeNewUserCustomer(strName, strEmail, strMob, strPassword, userType, address, pinCode, encodedImage,user.getUid());
-                            writeAllUsers(strName, strEmail, strMob, strPassword, userType, address, pinCode, encodedImage);
+                            SetToken(user.getUid());
 
-                            if (userType.equals("Customer"))
-                            {
-                                Intent intent=new Intent(getApplicationContext(), CustomerHomePage.class);
-                                startActivity(intent);
-                            }
-                            else{
-                                Intent intent=new Intent(getApplicationContext(), RestaurantHomePage.class);
-                                startActivity(intent);
-                            }
+                            Intent intent=new Intent(getApplicationContext(), RestaurantHomePage.class);
+                            startActivity(intent);
+
 
                         } else {
                             // If sign in fails, display a message to the user.
                             Log.w("TAG", "createUserWithEmail:failure", task.getException());
-                            Toast.makeText(SignUpCustomerActivity.this, "Authentication failed.",Toast.LENGTH_SHORT).show();
+                            Toast.makeText(SignUpRestaurant.this, "Authentication failed.",Toast.LENGTH_SHORT).show();
 
                         }
                     }
                 });
 
     }
+
 
 
     private String encodeImage(Bitmap bitmap)
@@ -205,13 +217,15 @@ public class SignUpCustomerActivity extends AppCompatActivity {
         strEmail= Email.getText().toString();
         strMob=mobNo.getText().toString();
         strPassword= Pass.getText().toString();
-        userType="Customer";
+        userType="Restaurant";
+        restaurantName=etRestaurantName.getText().toString();
+        gstNo=etGstNo.getText().toString();
         pinCode=etPinCode.getText().toString();
         address=etAddress.getText().toString();
         Toast.makeText(getApplicationContext(), userType, Toast.LENGTH_SHORT).show();
 
         if (strName.isEmpty() || strMob.isEmpty() || strPassword.isEmpty() || strEmail.isEmpty()) {
-            AlertDialog.Builder builder1 = new AlertDialog.Builder(SignUpCustomerActivity.this);
+            AlertDialog.Builder builder1 = new AlertDialog.Builder(SignUpRestaurant.this);
             builder1.setMessage("Note : All Entries are compulsory , Please enter all the details.");
             builder1.setCancelable(true);
 
@@ -227,43 +241,22 @@ public class SignUpCustomerActivity extends AppCompatActivity {
             alert11.show();
         } else {
             if (strEmail.contains("@") && strEmail.contains(".com")) {
-                FirebaseUser user = firebaseAuth.getCurrentUser();
-//                if (userType.equals("Customer")) {
+                databaseReferenceRestaurant.addListenerForSingleValueEvent(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(@NonNull DataSnapshot snapshot) {
 
-                    databaseReferenceCustomer.addListenerForSingleValueEvent(new ValueEventListener() {
-                        @Override
-                        public void onDataChange(@NonNull DataSnapshot snapshot) {
+                        writeAllUsers(strName, strEmail, strMob, strPassword, userType, address, pinCode, encodedImage);
+                        Register();
+                    }
 
-                            Register();
-                        }
+                    @Override
+                    public void onCancelled(@NonNull DatabaseError error) {
 
-                        @Override
-                        public void onCancelled(@NonNull DatabaseError error) {
-
-                        }
-                    });
-//                } else if (userType.equals("Restaurant")){
-//                   databaseReferenceRestaurant.child(userType).addListenerForSingleValueEvent(new ValueEventListener() {
-//                        @Override
-//                        public void onDataChange(@NonNull DataSnapshot snapshot) {
-//                            writeNewUserRestaurant(strName, strEmail, strMob, strPassword,userType,address,pinCode,encodedImage);
-//                            writeNewUser(strName, strEmail, strMob, strPassword,userType,address,pinCode,encodedImage);
-//                            Register();
-////                            startActivity(new Intent(SignUpActivity.this, SignInActivity.class));
-//                        }
-//
-//                        @Override
-//                        public void onCancelled(@NonNull DatabaseError error) {
-//
-//                        }
-//                    });
-//                }
-//                else {
-//                    Toast.makeText(getApplicationContext(), "No value", Toast.LENGTH_SHORT).show();
-//                }
+                    }
+                });
             }
             else {
-                Toast.makeText(SignUpCustomerActivity.this, "Enter Valid E-Mail Id", Toast.LENGTH_SHORT).show();
+                Toast.makeText(SignUpRestaurant.this, "Enter Valid E-Mail Id", Toast.LENGTH_SHORT).show();
             }
         }
 
@@ -271,22 +264,12 @@ public class SignUpCustomerActivity extends AppCompatActivity {
         StrictMode.setThreadPolicy(policy);
     }
 
-    public void writeNewUser(String name, String email, String mobileNo, String password, String role, String address, String pinCode,String image) {
-        User user = new User(name, email, mobileNo, password,role,address,pinCode,image);
+    public void writeNewUser(String name, String email, String mobileNo, String password, String role, String address, String pinCode,String image,String restaurantName,String gstNo,String uid) {
+        Restaurant user = new Restaurant(image,name, email, mobileNo, password,role,restaurantName,address,pinCode,gstNo,uid);
         databaseReferenceRestaurant.child(mobileNo).setValue(user);
         Toast.makeText(getApplicationContext(), "Data Send Successfully", Toast.LENGTH_SHORT).show();
     }
 
-
-    /////////////////////////////////////////////////////---------------------------------
-
-
-    public void writeNewUserCustomer(String name, String email, String mobileNo, String password, String role, String address, String pinCode,String image,String uid) {
-        User user = new User(name, email, mobileNo, password,role,address,pinCode,image,uid);
-        databaseReferenceCustomer.child(mobileNo).setValue(user);
-        Toast.makeText(getApplicationContext(), "Data Send Successfully", Toast.LENGTH_SHORT).show();
-
-    }
     public void writeAllUsers(String name, String email, String mobileNo, String password, String role, String address, String pinCode,String image) {
         User user = new User(name, email, mobileNo, password,role,address,pinCode,image);
         databaseReferenceAllUsers.child(mobileNo).setValue(user);
@@ -294,27 +277,8 @@ public class SignUpCustomerActivity extends AppCompatActivity {
 
     }
 
-    private boolean getData(String mobileNo) {
-        final boolean[] b = new boolean[1];
-        DatabaseReference ref=FirebaseDatabase.getInstance().getReference().child("users").child("all").child("allUsersInDatabase");
-        ref.orderByChild("mobileNo").equalTo(strMob).addValueEventListener(new ValueEventListener(){
-            @Override
-            public void onDataChange(DataSnapshot dataSnapshot){
-                b[0] = dataSnapshot.exists();
-            }
-
-            @Override
-            public void onCancelled(@NonNull DatabaseError error) {
-
-            }
-        });
-
-        return b[0];
-    }
-
-
-    public void writeNewUserRestaurant(String name, String email, String mobileNo, String password, String role, String address, String pinCode,String image) {
-        User user = new User(name, email, mobileNo, password,role,address,pinCode,image);
+    public void writeNewUserRestaurant(String name, String email, String mobileNo, String password, String role, String address, String pinCode,String image,String restaurantName,String gstNo,String uid) {
+        Restaurant user = new Restaurant(image,name, email, mobileNo, password,role,restaurantName,address,pinCode,gstNo,uid);
         databaseReferencePinCodeRestaurant.child("Delivery").child(pinCode).child(mobileNo).setValue(user);
         Toast.makeText(getApplicationContext(), "Data Send Successfully", Toast.LENGTH_SHORT).show();
 
