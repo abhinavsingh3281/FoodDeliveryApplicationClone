@@ -25,6 +25,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.FrameLayout;
+import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.PopupWindow;
 import android.widget.TextView;
@@ -58,7 +59,7 @@ public class RestaurantHomePage extends AppCompatActivity implements NavigationV
     private ExampleAdapter mAdapter;
     private RecyclerView.LayoutManager mLayoutManager;
 
-    private Button buttonInsert;
+    private ImageButton buttonInsert;
 
     FirebaseDatabase firebaseDatabase;
 
@@ -104,11 +105,11 @@ public class RestaurantHomePage extends AppCompatActivity implements NavigationV
 
         View headerView = navigationView.getHeaderView(0);
         TextView navUsername = (TextView) headerView.findViewById(R.id.header_name);
-        TextView navEmail = (TextView) headerView.findViewById(R.id.header_email);
+//        TextView navEmail = (TextView) headerView.findViewById(R.id.header_email);
         RoundedImageView imageView=(RoundedImageView) headerView.findViewById(R.id.header_image);
         imageView.setImageBitmap(bitmap);
         navUsername.setText(name);
-        navEmail.setText(email);
+//        navEmail.setText(email);
 
 
 
@@ -363,5 +364,13 @@ public class RestaurantHomePage extends AppCompatActivity implements NavigationV
 
         ExampleItem item = new ExampleItem(image,itemName, itemPrice);
         reference.child("items").child(itemName).setValue(item);
+    }
+
+    @Override
+    public void onBackPressed() {
+        Intent a = new Intent(Intent.ACTION_MAIN);
+        a.addCategory(Intent.CATEGORY_HOME);
+        a.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+        startActivity(a);
     }
 }

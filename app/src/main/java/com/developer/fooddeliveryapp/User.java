@@ -11,6 +11,7 @@ public class User {
     private String pinCode;
     private String image;
     private String uid;
+    private String restaurantName;
 
 
     public User(String name, String email, String mobileNo, String password) {
@@ -51,6 +52,18 @@ public class User {
         this.uid = uid;
     }
 
+    public User(String name, String email, String mobileNo, String password, String role, String address, String pinCode, String image, String uid,String restaurantName) {
+        this.name = name;
+        this.email = email;
+        this.mobileNo = mobileNo;
+        this.password = password;
+        this.role = role;
+        this.address = address;
+        this.pinCode = pinCode;
+        this.image = image;
+        this.uid=uid;
+        this.restaurantName = restaurantName;
+    }
     public String getUid() {
         return uid;
     }
@@ -121,5 +134,13 @@ public class User {
 
     public void setImage(String image) {
         this.image = image;
+    }
+
+    public String getRestaurantName() {
+        return restaurantName;
+    }
+
+    public void setRestaurantName(String restaurantName) {
+        this.restaurantName = restaurantName;
     }
 }

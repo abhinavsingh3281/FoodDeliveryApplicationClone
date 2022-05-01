@@ -4,9 +4,12 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.view.View;
+import android.widget.ImageButton;
 
 import com.developer.fooddeliveryapp.Customer.HomePageAdapter.ExampleAdapterCustomer;
 import com.developer.fooddeliveryapp.Customer.HomePageAdapter.ExampleItemCustomer;
@@ -28,15 +31,27 @@ public class ViewMyOrders extends AppCompatActivity {
     private ExampleAdapterOrdersCustomer mAdapter;
     private RecyclerView.LayoutManager mLayoutManager;
 
+    ImageButton backButton;
+
     String mobileNo;
     ArrayList<OrderModel> list = new ArrayList<>();
 
-
+    SwipeRefreshLayout swipeRefreshLayout;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_view_my_orders);
+
         SessionManager session = new SessionManager(getApplicationContext());
+
+        backButton=findViewById(R.id.btn_back_view_my_orders);
+
+        backButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                onBackPressed();
+            }
+        });
 
         HashMap<String, String> user = session.getUserDetails();
         String userId = user.get("userId").toString();
@@ -48,6 +63,15 @@ public class ViewMyOrders extends AppCompatActivity {
         String pincode=user.get("pincode").toString();
 
         createExampleList(mobileNo);
+
+        swipeRefreshLayout=findViewById(R.id.swipeContainerViewMyOrdersCustomer);
+        swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+                swipeRefreshLayout.setRefreshing(false);
+                createExampleList(mobileNo);
+            }
+        });
 
     }
     public void createExampleList(String mobileNo) {
@@ -70,6 +94,16 @@ public class ViewMyOrders extends AppCompatActivity {
                 mRecyclerView.setLayoutManager(mLayoutManager);
                 mRecyclerView.setAdapter(mAdapter);
 
+                mAdapter.setOnItemClickListener(new ExampleAdapterOrdersCustomer.OnItemClickListener() {
+                    @Override
+                    public void onItemClick(int position) {
+                        OrderModel orderModel=list.get(position);
+                        Intent intent1=new Intent(getApplicationContext(),ViewDetailedOrdersCustomer.class);
+                        intent1.putExtra("orderId",orderModel.getOrderId());
+                        intent1.putExtra("mobileNo",orderModel.getMobileNo());
+                        startActivity(intent1);
+                    }
+                });
             }
 
             @Override
@@ -79,4 +113,8 @@ public class ViewMyOrders extends AppCompatActivity {
         });
     }
 
+    @Override
+    public void onBackPressed() {
+        startActivity(new Intent(getApplicationContext(),CustomerHomePage.class));
+    }
 }

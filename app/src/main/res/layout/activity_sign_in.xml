@@ -99,26 +99,26 @@
 
         </com.google.android.material.textfield.TextInputLayout>
 
-        <com.google.android.material.textfield.TextInputLayout
-            android:id="@+id/signInSpinnerLayout"
-            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.ExposedDropdownMenu"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginLeft="20dp"
-            android:layout_marginRight="20dp"
-            android:layout_marginBottom="10dp"
-            android:hint="User Type">
+<!--        <com.google.android.material.textfield.TextInputLayout-->
+<!--            android:id="@+id/signInSpinnerLayout"-->
+<!--            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.ExposedDropdownMenu"-->
+<!--            android:layout_width="match_parent"-->
+<!--            android:layout_height="wrap_content"-->
+<!--            android:layout_marginLeft="20dp"-->
+<!--            android:layout_marginRight="20dp"-->
+<!--            android:layout_marginBottom="10dp"-->
+<!--            android:hint="User Type">-->
 
-            <androidx.appcompat.widget.AppCompatAutoCompleteTextView
-                android:id="@+id/spinnerTypeSignIn"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:editable="false"
-                android:clickable="true"
-                android:textSize="18dp"
-                android:singleLine="true"
-                tools:ignore="KeyboardInaccessibleWidget" />
-        </com.google.android.material.textfield.TextInputLayout>
+<!--            <androidx.appcompat.widget.AppCompatAutoCompleteTextView-->
+<!--                android:id="@+id/spinnerTypeSignIn"-->
+<!--                android:layout_width="match_parent"-->
+<!--                android:layout_height="wrap_content"-->
+<!--                android:editable="false"-->
+<!--                android:clickable="true"-->
+<!--                android:textSize="18dp"-->
+<!--                android:singleLine="true"-->
+<!--                tools:ignore="KeyboardInaccessibleWidget" />-->
+<!--        </com.google.android.material.textfield.TextInputLayout>-->
 
 <!--        <LinearLayout-->
 <!--            android:layout_width="match_parent"-->
@@ -175,10 +175,9 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginLeft="20dp"
-                android:layout_marginRight="20dp"
+                android:layout_marginLeft="10dp"
+                android:layout_marginRight="10dp"
                 android:layout_gravity="center"
-                android:gravity="center"
                 android:textSize="16dp"
                 android:textStyle="bold"
                 android:text="Don't have an Account?"/>

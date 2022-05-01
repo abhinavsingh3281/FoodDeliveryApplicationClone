@@ -3,6 +3,8 @@
     package="com.developer.fooddeliveryapp">
 
     <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
+    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
 
     <application
         android:allowBackup="true"
@@ -11,6 +13,21 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.FoodDeliveryApp">
+        <activity
+            android:name=".Delivery.DeliveryPartnerHomePage"
+            android:exported="false" />
+        <activity
+            android:name=".SignInAndUp.SignUp.SignUpDeliveryBoy"
+            android:exported="false" />
+        <activity
+            android:name=".Customer.MyAccountDetails"
+            android:exported="false" />
+        <activity
+            android:name=".Customer.ViewDetailedOrdersCustomer"
+            android:exported="false" />
+        <activity
+            android:name=".Customer.AddNewAddressCustomer"
+            android:exported="false" />
         <activity
             android:name=".Restraunt.ViewAllMyOrdersRestaurant"
             android:exported="false" />

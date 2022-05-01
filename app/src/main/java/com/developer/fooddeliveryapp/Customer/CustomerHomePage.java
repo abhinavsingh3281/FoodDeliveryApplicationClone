@@ -9,6 +9,7 @@ import androidx.core.view.GravityCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -26,6 +27,7 @@ import com.developer.fooddeliveryapp.Customer.HomePageAdapter.ExampleAdapterCust
 import com.developer.fooddeliveryapp.Customer.HomePageAdapter.ExampleItemCustomer;
 import com.developer.fooddeliveryapp.R;
 import com.developer.fooddeliveryapp.SessionManager;
+import com.developer.fooddeliveryapp.SharedPrefList;
 import com.developer.fooddeliveryapp.SignInAndUp.SignInActivity;
 import com.google.android.material.navigation.NavigationView;
 import com.google.android.material.textfield.TextInputEditText;
@@ -57,6 +59,7 @@ public class CustomerHomePage extends AppCompatActivity implements NavigationVie
 
     ArrayList<ExampleItemCustomer> list = new ArrayList<>();
 
+    SwipeRefreshLayout swipeRefreshLayout;
 
     DrawerLayout drawerLayout;
 
@@ -67,7 +70,6 @@ public class CustomerHomePage extends AppCompatActivity implements NavigationVie
 
         pinCode=findViewById(R.id.customerPinCode);
         checkPin=findViewById(R.id.btnCustomerPinCode);
-
 
         uid = FirebaseAuth.getInstance().getCurrentUser().getUid();
 
@@ -98,12 +100,13 @@ public class CustomerHomePage extends AppCompatActivity implements NavigationVie
 
         View headerView = navigationView.getHeaderView(0);
         TextView navUsername = (TextView) headerView.findViewById(R.id.header_name);
-        TextView navEmail = (TextView) headerView.findViewById(R.id.header_email);
+//        TextView navEmail = (TextView) headerView.findViewById(R.id.header_email);
+//        TextView navMobile=headerView.findViewById(R.id.header_mobile);
         RoundedImageView imageView=(RoundedImageView) headerView.findViewById(R.id.header_image);
         imageView.setImageBitmap(bitmap);
         navUsername.setText(name);
-        navEmail.setText(email);
-
+//        navEmail.setText(email);
+//        navMobile.setText(mobileNo);
 
 
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(this, drawerLayout, toolbar,
@@ -119,6 +122,14 @@ public class CustomerHomePage extends AppCompatActivity implements NavigationVie
 
             }
         });
+        swipeRefreshLayout=findViewById(R.id.swipeContainerCustomerHomePage);
+        swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+                swipeRefreshLayout.setRefreshing(false);
+                createExampleList(pinCode.getText().toString(),mobileNo);
+            }
+        });
 
     }
 
@@ -127,13 +138,13 @@ public class CustomerHomePage extends AppCompatActivity implements NavigationVie
         switch (item.getItemId()) {
             case R.id.nav_logout:
                 new FancyGifDialog.Builder(this)
-                        .setTitle("Do you want to Sign-Out?") // You can also send title like R.string.from_resources
-                        .setMessage("By Pressing SIGN-OUT you will not be able to use our services.") // or pass like R.string.description_from_resources
+                        .setTitle("Are you sure you want to LogOut?") // You can also send title like R.string.from_resources
+                        .setMessage("By Pressing LogOut you will not be able to access our services.") // or pass like R.string.description_from_resources
                         .setTitleTextColor(R.color.titleText)
                         .setDescriptionTextColor(R.color.descriptionText)
                         .setNegativeBtnText("Cancel") // or pass it like android.R.string.cancel
                         .setPositiveBtnBackground(R.color.positiveButton)
-                        .setPositiveBtnText("SIGN OUT") // or pass it like android.R.string.ok
+                        .setPositiveBtnText("LogOut") // or pass it like android.R.string.ok
                         .setNegativeBtnBackground(R.color.negativeButton)
                         .setGifResource(R.drawable.giflogoutmessage)   //Pass your Gif here
                         .isCancellable(true)
@@ -155,9 +166,9 @@ public class CustomerHomePage extends AppCompatActivity implements NavigationVie
             case R.id.nav_orders:
                 startActivity(new Intent(getApplicationContext(),ViewMyOrders.class));
                 break;
-//            case R.id.nav_share:
-//                Toast.makeText(this, "Share", Toast.LENGTH_SHORT).show();
-//                break;
+            case R.id.nav_account:
+                startActivity(new Intent(getApplicationContext(),MyAccountDetails.class));
+                break;
 //            case R.id.nav_send:
 //                Toast.makeText(this, "Send", Toast.LENGTH_SHORT).show();
 //                break;
@@ -209,5 +220,14 @@ public class CustomerHomePage extends AppCompatActivity implements NavigationVie
 
             }
         });
+    }
+
+    @Override
+    public void onBackPressed() {
+        Intent a = new Intent(Intent.ACTION_MAIN);
+        a.addCategory(Intent.CATEGORY_HOME);
+        SharedPrefList.deleteInPref(getApplicationContext());
+        a.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+        startActivity(a);
     }
 }

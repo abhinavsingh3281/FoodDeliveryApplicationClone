@@ -22,6 +22,7 @@ import android.widget.FrameLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.developer.fooddeliveryapp.AddressModel;
 import com.developer.fooddeliveryapp.Customer.CustomerHomePage;
 import com.developer.fooddeliveryapp.R;
 import com.developer.fooddeliveryapp.Restraunt.RestaurantHomePage;
@@ -43,6 +44,7 @@ import com.makeramen.roundedimageview.RoundedImageView;
 import java.io.ByteArrayOutputStream;
 import java.io.FileNotFoundException;
 import java.io.InputStream;
+import java.util.UUID;
 
 public class SignUpCustomerActivity extends AppCompatActivity {
     TextInputEditText Email, Pass,name,mobNo,confirmPass,etPinCode,etAddress,etGstNo;
@@ -143,18 +145,19 @@ public class SignUpCustomerActivity extends AppCompatActivity {
                             writeNewUserCustomer(strName, strEmail, strMob, strPassword, userType, address, pinCode, encodedImage,user.getUid());
                             writeAllUsers(strName, strEmail, strMob, strPassword, userType, address, pinCode, encodedImage);
 
+                            AddressModel addressModel=new AddressModel();
+                            addressModel.setAddress(address);
+
+                            DatabaseReference databaseReference= FirebaseDatabase.getInstance().getReference("users").child("Customer").child("Address").child(strMob).child(UUID.randomUUID().toString());
+                            databaseReference.setValue(addressModel.getAddress());
+
                             if (userType.equals("Customer"))
                             {
                                 Intent intent=new Intent(getApplicationContext(), CustomerHomePage.class);
                                 startActivity(intent);
                             }
-                            else{
-                                Intent intent=new Intent(getApplicationContext(), RestaurantHomePage.class);
-                                startActivity(intent);
-                            }
 
                         } else {
-                            // If sign in fails, display a message to the user.
                             Log.w("TAG", "createUserWithEmail:failure", task.getException());
                             Toast.makeText(SignUpCustomerActivity.this, "Authentication failed.",Toast.LENGTH_SHORT).show();
 

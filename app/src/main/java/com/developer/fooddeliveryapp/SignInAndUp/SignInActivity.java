@@ -13,6 +13,7 @@ import android.widget.Button;
 import android.widget.Toast;
 
 import com.developer.fooddeliveryapp.Customer.CustomerHomePage;
+import com.developer.fooddeliveryapp.Delivery.DeliveryPartnerHomePage;
 import com.developer.fooddeliveryapp.Notification.Token;
 import com.developer.fooddeliveryapp.R;
 import com.developer.fooddeliveryapp.Restraunt.RestaurantHomePage;
@@ -57,9 +58,9 @@ public class SignInActivity extends AppCompatActivity {
         PassTB = findViewById(R.id.passwordSignIn);
         signup=findViewById(R.id.btnSignUpCustomer);
 
-        spinner = findViewById(R.id.spinnerTypeSignIn);
+//        spinner = findViewById(R.id.spinnerTypeSignIn);
 
-        initUI();
+//        initUI();
 
         reference=FirebaseDatabase.getInstance().getReference("users").child("all");
 
@@ -73,6 +74,7 @@ public class SignInActivity extends AppCompatActivity {
             if (FirebaseAuth.getInstance().getCurrentUser()!= null) {
                 SessionManager session = new SessionManager(getApplicationContext());
                 HashMap<String, String> user = session.getUserDetails();
+
                 String userId = user.get("userId").toString();
                 String categoryId = user.get("role").toString();
                 String mobileNo=user.get("mobileNo").toString();
@@ -80,8 +82,13 @@ public class SignInActivity extends AppCompatActivity {
                 if (categoryId.equals("Customer")){
                     startActivity(new Intent(this, CustomerHomePage.class));
                 }
-                else {
+                else if(categoryId.equals("Restaurant")){
                     Intent intent =new Intent(getApplicationContext(),RestaurantHomePage.class);
+                    intent.putExtra("mobileNo",mobileNo);
+                    startActivity(intent);
+                }
+                else {
+                    Intent intent =new Intent(getApplicationContext(), DeliveryPartnerHomePage.class);
                     intent.putExtra("mobileNo",mobileNo);
                     startActivity(intent);
                 }
@@ -116,9 +123,9 @@ public class SignInActivity extends AppCompatActivity {
 //        Toast.makeText(getApplicationContext(),"Token"+ refreshToken[0], Toast.LENGTH_LONG).show();
     }
     private void getData(String mobileNo) {
-        String s=spinner.getText().toString();
+//        String s=spinner.getText().toString();
         firebaseDatabase = FirebaseDatabase.getInstance();
-        databaseReference = firebaseDatabase.getReference("users").child(s).child(mobileNo);
+        databaseReference = firebaseDatabase.getReference("users").child("all").child("allUsersInDatabase").child(mobileNo);
 
         databaseReference.addValueEventListener(new ValueEventListener() {
             @Override
@@ -130,29 +137,38 @@ public class SignInActivity extends AppCompatActivity {
                 String image=snapshot.child("image").getValue(String.class);
                 String address=snapshot.child("address").getValue(String.class);
                 String pincode=snapshot.child("pinCode").getValue(String.class);
+                String role=snapshot.child("role").getValue(String.class);
 
                 FirebaseAuth.getInstance().signInWithEmailAndPassword(email,password).addOnSuccessListener(new OnSuccessListener<AuthResult>() {
                     @Override
                     public void onSuccess(AuthResult authResult) {
 
-                        writeNewUserWithUid(name,email,mobileNo,password,FirebaseAuth.getInstance().getCurrentUser().getUid().toString(),s);
+                        writeNewUserWithUid(name,email,mobileNo,password,FirebaseAuth.getInstance().getCurrentUser().getUid().toString(),role);
                         SetToken(FirebaseAuth.getInstance().getCurrentUser().getUid());
                         SessionManager session = new SessionManager(getApplicationContext());
-                        if (s.equals("Customer"))
+                        assert role != null;
+                        if (role.equals("Customer"))
                         {
                             Intent intent=new Intent(getApplicationContext(), CustomerHomePage.class);
                             intent.putExtra("mobileNo",mobileNo);
-                            session.createLoginSession(FirebaseAuth.getInstance().getCurrentUser().getUid().toString(),s.trim().toString(),mobileNo,image,name,email,address,pincode);
+                            session.createLoginSession(FirebaseAuth.getInstance().getCurrentUser().getUid().toString(),role,mobileNo,image,name,email,address,pincode);
                             intent.putExtra("uid",FirebaseAuth.getInstance().getCurrentUser().getUid().toString());
 //                            SetToken();
                             startActivity(intent);
                         }
-                        else{
+                        else if (role.equals("Restaurant")){
                             Intent intent=new Intent(getApplicationContext(),RestaurantHomePage.class);
                             String restaurantName=snapshot.child("restaurantName").getValue(String.class);
                             intent.putExtra("mobileNo",mobileNo);
-                            session.createLoginSession(FirebaseAuth.getInstance().getCurrentUser().getUid().toString(),s.trim().toString(),mobileNo,image,name,email,address,pincode,restaurantName);
+                            session.createLoginSession(FirebaseAuth.getInstance().getCurrentUser().getUid().toString(),role,mobileNo,image,name,email,address,pincode,restaurantName);
                             intent.putExtra("uid",FirebaseAuth.getInstance().getCurrentUser().getUid().toString());
+//                            SetToken();
+                            startActivity(intent);
+                        }
+                        else {
+                            Intent intent=new Intent(getApplicationContext(),DeliveryPartnerHomePage.class);
+                            intent.putExtra("mobileNo",mobileNo);
+                            session.createLoginSession(FirebaseAuth.getInstance().getCurrentUser().getUid().toString(),role,mobileNo,image,name,email,pincode);
 //                            SetToken();
                             startActivity(intent);
                         }
@@ -172,16 +188,16 @@ public class SignInActivity extends AppCompatActivity {
         Toast.makeText(getApplicationContext(), "Data Send Successfully", Toast.LENGTH_SHORT).show();
 
     }
-    private void initUI() {
-
-        ArrayList<String> customerList = getCustomerList();
-
-        //Create adapter
-        ArrayAdapter<String> adapter = new ArrayAdapter<>(SignInActivity.this, android.R.layout.simple_spinner_dropdown_item, customerList);
-
-        //Set adapter
-        spinner.setAdapter(adapter);
-    }
+//    private void initUI() {
+//
+//        ArrayList<String> customerList = getCustomerList();
+//
+//        //Create adapter
+//        ArrayAdapter<String> adapter = new ArrayAdapter<>(SignInActivity.this, android.R.layout.simple_spinner_dropdown_item, customerList);
+//
+//        //Set adapter
+//        spinner.setAdapter(adapter);
+//    }
     
 
     private ArrayList<String> getCustomerList()

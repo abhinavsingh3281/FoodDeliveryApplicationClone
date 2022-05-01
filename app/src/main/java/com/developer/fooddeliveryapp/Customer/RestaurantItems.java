@@ -4,6 +4,7 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -44,6 +45,7 @@ public class RestaurantItems extends AppCompatActivity {
     ImageButton order;
     TextView restaurantNameTv;
 
+    SwipeRefreshLayout swipeRefreshLayout;
     ArrayList<ExampleItemCustomerList> list = new ArrayList<>();
 
     private List<ExampleItemCustomerListCart> taskList=new ArrayList<>();
@@ -56,10 +58,14 @@ public class RestaurantItems extends AppCompatActivity {
         buttonBack=findViewById(R.id.btnBack);
         restaurantNameTv=findViewById(R.id.restaurantName);
 
+        swipeRefreshLayout = (SwipeRefreshLayout) findViewById(R.id.swipeContainer);
+
 
         taskList = SharedPrefList.readListFromPref(this);
         if (taskList == null)
             taskList = new ArrayList<>();
+
+
 
 
         SessionManager session = new SessionManager(getApplicationContext());
@@ -88,10 +94,19 @@ public class RestaurantItems extends AppCompatActivity {
         buttonBack.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                SharedPrefList.deleteInPref(getApplicationContext());
                 onBackPressed();
             }
         });
+
+        swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+                swipeRefreshLayout.setRefreshing(false);
+                createExampleList(mobileNo);
+            }
+        });
+
+        Toast.makeText(this, mobNo, Toast.LENGTH_SHORT).show();
 
 
         order.setOnClickListener(new View.OnClickListener() {
@@ -100,6 +115,7 @@ public class RestaurantItems extends AppCompatActivity {
                 SharedPrefList.writeListInPref(getApplicationContext(), taskList);
                 Intent intent1=new Intent(getApplicationContext(),ViewOrder.class);
                 intent1.putExtra("restaurantName",restaurantName);
+                intent1.putExtra("restaurantMob",mobNo);
                 startActivity(intent1);
             }
         });
@@ -123,6 +139,7 @@ public class RestaurantItems extends AppCompatActivity {
         db.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
+                list.clear();
                 for (DataSnapshot dataSnapshot1 : snapshot.getChildren()) {
                     ExampleItemCustomerList p = dataSnapshot1.getValue(ExampleItemCustomerList.class);
                     list.add(p);
@@ -183,6 +200,7 @@ public class RestaurantItems extends AppCompatActivity {
                 .OnPositiveClicked(new FancyGifDialogListener() {
                     @Override
                     public void OnClick() {
+                        SharedPrefList.deleteInPref(getApplicationContext());
                         startActivity(new Intent(getApplicationContext(),CustomerHomePage.class));
                         Toast.makeText(RestaurantItems.this,"Ok",Toast.LENGTH_SHORT).show();
                     }
@@ -196,4 +214,11 @@ public class RestaurantItems extends AppCompatActivity {
                 .build();
     }
 
+
+
+    @Override
+    protected void onStop() {
+        SharedPrefList.deleteInPref(getApplicationContext());
+        super.onStop();
+    }
 }

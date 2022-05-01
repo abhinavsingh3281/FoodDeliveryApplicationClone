@@ -36,7 +36,7 @@ public class ViewAllPendingRequestRestaurant extends AppCompatActivity {
     private ExampleAdapterOrdersRestaurant mAdapter;
     private RecyclerView.LayoutManager mLayoutManager;
 
-    String restaurantName;
+    String restaurantName,restaurantMob;
     ImageButton imageButton;
     ArrayList<OrderModel> list = new ArrayList<>();
 
@@ -55,12 +55,14 @@ public class ViewAllPendingRequestRestaurant extends AppCompatActivity {
         SessionManager session = new SessionManager(getApplicationContext());
         HashMap<String, String> user = session.getUserDetails();
         restaurantName=user.get("restaurantName").toString();
+        restaurantMob=user.get("mobileNo").toString();
+
         Toast.makeText(this, restaurantName, Toast.LENGTH_SHORT).show();
-        createExampleList(restaurantName);
+        createExampleList(restaurantMob);
     }
 
-    public void createExampleList(String restaurantName) {
-        DatabaseReference db = FirebaseDatabase.getInstance().getReference("users").child("Restaurant").child("Orders").child(restaurantName).child("pending");
+    public void createExampleList(String restaurantMob) {
+        DatabaseReference db = FirebaseDatabase.getInstance().getReference("users").child("Restaurant").child("Orders").child(restaurantMob).child("pending");
 
         mRecyclerView = findViewById(R.id.recyclerViewOrdersPendingRestaurant);
         mRecyclerView.setHasFixedSize(true);

@@ -6,43 +6,100 @@
     android:layout_height="match_parent"
     android:orientation="vertical"
     tools:context=".Customer.ViewOrder">
+
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="300dp"
         android:orientation="vertical">
-        <LinearLayout
+        <androidx.appcompat.widget.Toolbar
+            android:id="@+id/toolbar_pendingRequest"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            >
+            android:layout_height="?attr/actionBarSize"
+            android:background="?attr/colorSecondaryVariant"
+            android:elevation="4dp"
+            android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar"
+            app:popupTheme="@style/ThemeOverlay.AppCompat.Light" >
             <ImageButton
                 android:id="@+id/btnBackCart"
-                style="@style/Widget.MaterialComponents.FloatingActionButton"
-                android:layout_width="50dp"
-                app:riv_oval="true"
-                android:layout_height="50dp"
-                android:gravity="right"
-                android:layout_marginTop="10dp"
-                android:layout_marginRight="5dp"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:gravity="left"
                 android:src="@drawable/ic_back"
+                android:background="@android:color/transparent"
                 app:iconGravity="top"
                 />
             <TextView
                 android:id="@+id/textView"
                 android:text="Cart"
-                android:layout_weight="2"
-                android:layout_width="250dp"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="5dp"
-                android:textSize="22dp"
-                android:layout_gravity="center"
-                android:textColor="@color/black" />
+                android:layout_marginLeft="25dp"
+                android:textSize="25dp"
+                android:layout_gravity="left"
+                android:textColor="@color/white" />
 
 
+        </androidx.appcompat.widget.Toolbar>
+
+        <LinearLayout
+            android:id="@+id/addressCustomerLinearLayout"
+            android:layout_width="match_parent"
+            android:visibility="gone"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            >
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Choose Your locality"
+                android:layout_gravity="left"
+                android:textStyle="bold"
+                android:textSize="16dp"
+                android:textColor="@color/colorPrimary"
+                android:layout_marginTop="10dp"
+                android:layout_marginLeft="23dp"/>
+            <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/addressCustomer"
+                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.ExposedDropdownMenu"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="20dp"
+                android:layout_marginRight="20dp"
+                android:layout_marginBottom="10dp"
+                android:hint="Address">
+
+                <androidx.appcompat.widget.AppCompatAutoCompleteTextView
+                    android:id="@+id/spinnerAddressCustomer"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:editable="false"
+                    android:clickable="true"
+                    android:textSize="18dp"
+                    android:singleLine="true"
+                    tools:ignore="KeyboardInaccessibleWidget" />
+            </com.google.android.material.textfield.TextInputLayout>
         </LinearLayout>
+
+        <pl.droidsonroids.gif.GifImageView
+            android:id="@+id/viewOrdersBasket"
+            android:layout_width="match_parent"
+            android:layout_height="400dp"
+            android:src="@drawable/emptybasket"/>
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/recyclerViewCartListItems"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="10dp"
+            android:visibility="gone"
+            android:background="@android:color/transparent"
+            android:padding="4dp"
+            android:scrollbars="vertical" />
+
         <LinearLayout
             android:id="@+id/cartValue"
             android:layout_width="match_parent"
+            android:layout_marginTop="20dp"
             android:layout_marginLeft="10dp"
             android:visibility="gone"
             android:layout_height="wrap_content"
@@ -72,22 +129,6 @@
 
         </LinearLayout>
 
-        <pl.droidsonroids.gif.GifImageView
-            android:id="@+id/viewOrdersBasket"
-            android:layout_width="match_parent"
-            android:layout_height="400dp"
-            android:src="@drawable/emptybasket"/>
-
-        <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/recyclerViewCartListItems"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_margin="10dp"
-            android:visibility="gone"
-            android:background="@android:color/transparent"
-            android:padding="4dp"
-            android:scrollbars="vertical" />
-
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -100,16 +141,14 @@
                 android:layout_height="wrap_content"
                 android:textSize="18dp"
                 android:text="Proceed to pay"
-                android:layout_margin="55dp"/>
+                android:layout_marginLeft="55dp"
+                android:layout_marginRight="55dp"
+                android:layout_marginTop="20dp"/>
 
         </LinearLayout>
     </LinearLayout>
 
-
-
-
 </ScrollView>
-
 
 
 

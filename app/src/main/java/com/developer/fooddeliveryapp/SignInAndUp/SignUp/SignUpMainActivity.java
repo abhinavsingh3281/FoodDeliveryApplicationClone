@@ -30,6 +30,7 @@ public class SignUpMainActivity extends AppCompatActivity {
         ArrayList<String> users = new ArrayList<>();
         users.add("Customer");
         users.add("Restaurant");
+        users.add("Delivery Partner");
 
         //Create adapter
         ArrayAdapter<String> adapter = new ArrayAdapter<>(SignUpMainActivity.this, android.R.layout.simple_spinner_dropdown_item, users);
@@ -48,12 +49,18 @@ public class SignUpMainActivity extends AppCompatActivity {
                     intent.putExtra("userType",spinner.getText());
                     startActivity(intent);
                 }
-                else
+                else if (spinner.getText().toString().equals("Restaurant"))
                 {
                     Intent intent=new Intent(getApplicationContext(),SignUpRestaurant.class);
                     intent.putExtra("userType",spinner.getText());
                     startActivity(intent);
                     Toast.makeText(getApplicationContext(), "REST", Toast.LENGTH_SHORT).show();
+                }
+                else {
+                    Intent intent=new Intent(getApplicationContext(),SignUpDeliveryBoy.class);
+                    intent.putExtra("userType",spinner.getText());
+                    startActivity(intent);
+                    Toast.makeText(getApplicationContext(), "Delivery", Toast.LENGTH_SHORT).show();
                 }
             }
         });

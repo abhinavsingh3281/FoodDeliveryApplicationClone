@@ -10,6 +10,7 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
+import android.widget.ImageButton;
 import android.widget.Toast;
 
 import com.developer.fooddeliveryapp.Customer.CartAdapter.ExampleItemCustomerListCart;
@@ -45,9 +46,11 @@ public class ViewDetailedPendingRequest extends AppCompatActivity {
     private ViewDetailedPendingRequestAdapter mAdapter;
     private RecyclerView.LayoutManager mLayoutManager;
 
-    String restaurantName;
+    String restaurantName,restaurantMob;
 
     Button btnAcceptRequest,btnRejectRequest;
+
+    ImageButton backButton;
     ArrayList<DetailedPendingRequestModel>list=new ArrayList<>();
 
     @Override
@@ -58,12 +61,21 @@ public class ViewDetailedPendingRequest extends AppCompatActivity {
         btnAcceptRequest=findViewById(R.id.btnAcceptRequest);
         btnRejectRequest=findViewById(R.id.btnRejectRequest);
 
+        backButton=findViewById(R.id.btn_Back_RestaurantViewDetailedPendingRequest);
+
+        backButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                onBackPressed();
+            }
+        });
         Intent intent=getIntent();
         String orderId=intent.getStringExtra("orderId");
 
         SessionManager session = new SessionManager(getApplicationContext());
         HashMap<String, String> user = session.getUserDetails();
         restaurantName=user.get("restaurantName").toString();
+        restaurantMob=user.get("mobileNo").toString();
 
         ArrayList<OrderModel> listPrivate = new ArrayList<>();
 
@@ -71,19 +83,21 @@ public class ViewDetailedPendingRequest extends AppCompatActivity {
         }.getType();
         listPrivate = new Gson().fromJson(getIntent().getStringExtra("private_list"), type);
 
-//        ArrayList<ExampleItemCustomerListCart> challenge = this.getIntent().getExtras().getParcelableArrayList("Birds");
-
-
         Log.d("HELLO",listPrivate.get(0).getEmail());
 
-        createExampleList(orderId,restaurantName);
+        createExampleList(orderId,restaurantMob);
 
+        listPrivate.get(0).setStatus("Order Accepted By The Restaurant");
         ArrayList<OrderModel> finalListPrivate = listPrivate;
         btnAcceptRequest.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                DatabaseReference databaseReference=FirebaseDatabase.getInstance().getReference("users").child("Restaurant").child("Orders").child(restaurantName).child("accept").child(orderId);
+                DatabaseReference databaseReference=FirebaseDatabase.getInstance().getReference("users").child("Restaurant").child("Orders").child(restaurantMob).child("accept").child(orderId);
                 databaseReference.setValue(finalListPrivate.get(0));
+
+
+                DatabaseReference databaseReference1=FirebaseDatabase.getInstance().getReference("users").child("Customer").child("Orders").child(finalListPrivate.get(0).getMobileNo()).child(orderId);
+                databaseReference1.setValue(finalListPrivate.get(0));
                 deletePending(orderId);
 
                 startActivity(new Intent(getApplicationContext(),ViewAllPendingRequestRestaurant.class));
@@ -102,12 +116,12 @@ public class ViewDetailedPendingRequest extends AppCompatActivity {
 
     public void deletePending(String orderId)
     {
-        DatabaseReference databaseReference=FirebaseDatabase.getInstance().getReference("users").child("Restaurant").child("Orders").child(restaurantName).child("pending").child(orderId);
+        DatabaseReference databaseReference=FirebaseDatabase.getInstance().getReference("users").child("Restaurant").child("Orders").child(restaurantMob).child("pending").child(orderId);
         databaseReference.removeValue();
     }
 
-    public void createExampleList(String orderId,String restaurantName) {
-        DatabaseReference db = FirebaseDatabase.getInstance().getReference("users").child("Restaurant").child("Orders").child(restaurantName).child("pending").child(orderId).child("food");
+    public void createExampleList(String orderId,String restaurantMob) {
+        DatabaseReference db = FirebaseDatabase.getInstance().getReference("users").child("Restaurant").child("Orders").child(restaurantMob).child("pending").child(orderId).child("food");
 
         mRecyclerView = findViewById(R.id.recyclerViewOrdersDetailedPendingRestaurant);
         mRecyclerView.setHasFixedSize(true);
@@ -133,5 +147,10 @@ public class ViewDetailedPendingRequest extends AppCompatActivity {
 
             }
         });
+    }
+
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
     }
 }

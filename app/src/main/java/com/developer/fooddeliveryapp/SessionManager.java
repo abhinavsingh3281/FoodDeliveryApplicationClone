@@ -117,6 +117,29 @@ public class SessionManager {
         // commit changes
         editor.commit();
     }
+
+
+    public void createLoginSession(String userId, String role,String mobileNo,String image,String name,String email,String pinCode) {
+
+        // Storing userId in pref
+        editor.putString(KEY_USERID, userId);
+
+        // Storing catId in pref
+        editor.putString(KEY_ROLE, role);
+
+        editor.putString(KEY_MOBILE,mobileNo);
+
+        editor.putString(KEY_IMAGE,image);
+
+        editor.putString(KEY_NAME, name);
+
+        editor.putString(KEY_EMAIL,email);
+
+        editor.putString(KEY_PINCODE,pinCode);
+
+        // commit changes
+        editor.commit();
+    }
     /**
      * Call this method anywhere in the project to Get the stored session data
      * */

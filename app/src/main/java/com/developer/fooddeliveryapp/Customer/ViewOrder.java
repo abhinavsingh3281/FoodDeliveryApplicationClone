@@ -1,24 +1,38 @@
 package com.developer.fooddeliveryapp.Customer;
 
+import androidx.annotation.NonNull;
 import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
+import android.provider.MediaStore;
 import android.util.Log;
+import android.view.Gravity;
+import android.view.LayoutInflater;
 import android.view.View;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
+import android.widget.AutoCompleteTextView;
 import android.widget.Button;
+import android.widget.FrameLayout;
 import android.widget.ImageButton;
 import android.widget.LinearLayout;
+import android.widget.PopupWindow;
+import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.developer.fooddeliveryapp.AddressModel;
 import com.developer.fooddeliveryapp.Customer.CartAdapter.ExampleAdapterListCustomerCart;
 import com.developer.fooddeliveryapp.Customer.CartAdapter.ExampleItemCustomerListCart;
+import com.developer.fooddeliveryapp.Customer.HomePageAdapter.ExampleAdapterCustomer;
+import com.developer.fooddeliveryapp.Customer.HomePageAdapter.ExampleItemCustomer;
 import com.developer.fooddeliveryapp.Customer.Payment.FailurePaymentPage;
 import com.developer.fooddeliveryapp.Customer.Payment.SuccessfulPaymentPage;
 import com.developer.fooddeliveryapp.Customer.ViewOrdersAdapter.OrderModel;
@@ -31,8 +45,14 @@ import com.developer.fooddeliveryapp.Notification.SendNotif;
 import com.developer.fooddeliveryapp.R;
 import com.developer.fooddeliveryapp.SessionManager;
 import com.developer.fooddeliveryapp.SharedPrefList;
+import com.developer.fooddeliveryapp.SignInAndUp.SignUp.SignUpMainActivity;
+import com.google.android.material.textfield.TextInputEditText;
+import com.google.android.material.textfield.TextInputLayout;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 import com.razorpay.Checkout;
 import com.razorpay.PaymentResultListener;
 
@@ -70,7 +90,11 @@ public class ViewOrder extends AppCompatActivity implements PaymentResultListene
 
     private APIService apiService;
 
-    String restaurantName;
+
+    AutoCompleteTextView spinner;
+    LinearLayout addressLayout;
+
+    String restaurantName,restaurantMobileNo;
     int total;
     String mobNo;
 
@@ -79,20 +103,16 @@ public class ViewOrder extends AppCompatActivity implements PaymentResultListene
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_view_order);
 
+        spinner = findViewById(R.id.spinnerAddressCustomer);
+
         apiService = Client.getClient("https://fcm.googleapis.com/").create(APIService.class);
-
-        list = SharedPrefList.readListFromPref(this);
-        if (list == null)
-            list = new ArrayList<>();
-
-//        String date=LocalTime.now().toString().substring(0,5);
-//        Toast.makeText(this, date, Toast.LENGTH_SHORT).show();
 
         orderTotal = findViewById(R.id.orderTotal);
         payment = findViewById(R.id.payOrder);
         buttonBack = findViewById(R.id.btnBackCart);
         cartLinearLayout=findViewById(R.id.cartValue);
         viewOrdersBasket=findViewById(R.id.viewOrdersBasket);
+        addressLayout=findViewById(R.id.addressCustomerLinearLayout);
 
         buttonBack.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -109,11 +129,60 @@ public class ViewOrder extends AppCompatActivity implements PaymentResultListene
         String image = user.get("image").toString();
         email = user.get("email").toString();
         name = user.get("name").toString();
-        address=user.get("address").toString();
+
+
+        ArrayList<String>stringAddress=new ArrayList<>();
+        DatabaseReference databaseReference= FirebaseDatabase.getInstance().getReference("users").child("Customer").child("Address").child(mobNo);
+        databaseReference.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                stringAddress.clear();
+                for (DataSnapshot dataSnapshot1 : snapshot.getChildren()) {
+                    String p = dataSnapshot1.getValue(String.class);
+                    stringAddress.add(p);
+                }
+                stringAddress.add("Add New Address");
+            }
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+
+            }
+        });
+
+        //Create adapter
+        ArrayAdapter<String> adapter = new ArrayAdapter<>(getApplicationContext(), android.R.layout.simple_spinner_dropdown_item, stringAddress);
+
+        //Set adapter
+        spinner.setAdapter(adapter);
+
+        adapter.notifyDataSetChanged();
+
 
         Intent intent=getIntent();
         restaurantName=intent.getStringExtra("restaurantName");
+        restaurantMobileNo=intent.getStringExtra("restaurantMob");
+
+        Toast.makeText(this, restaurantMobileNo, Toast.LENGTH_SHORT).show();
+
         createExampleList();
+
+        spinner.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+
+            @Override
+            public void onItemClick(AdapterView<?> arg0, View arg1, int arg2,
+                                    long arg3) {
+                int a=arg0.getSelectedItemPosition();
+                if (arg0.getItemAtPosition(arg2).equals("Add New Address")) {
+                    Toast.makeText(ViewOrder.this, "HELO", Toast.LENGTH_SHORT).show();
+                    Intent intent1=new Intent(getApplicationContext(),AddNewAddressCustomer.class);
+                    intent1.putExtra("mobileNo",mobNo);
+                    intent1.putExtra("restaurantName",restaurantName);
+                    intent1.putExtra("restaurantMob",restaurantMobileNo);
+                    startActivity(intent1);
+                }else
+                    Toast.makeText(ViewOrder.this, "BYE", Toast.LENGTH_SHORT).show();
+            }
+        });
 
         Toast.makeText(getApplicationContext(), mobNo, Toast.LENGTH_SHORT).show();
 
@@ -121,10 +190,8 @@ public class ViewOrder extends AppCompatActivity implements PaymentResultListene
             @Override
             public void onClick(View v) {
                 makepayment();
-//                startActivity(new Intent(getApplicationContext(), SendNotif.class));
             }
         });
-
 
     }
     public void sendNotifications(String usertoken, String title, String message) {
@@ -148,6 +215,9 @@ public class ViewOrder extends AppCompatActivity implements PaymentResultListene
     }
 
     public void createExampleList() {
+        list = SharedPrefList.readListFromPref(this);
+        if (list == null)
+            list = new ArrayList<>();
 
         mRecyclerView = findViewById(R.id.recyclerViewCartListItems);
         mRecyclerView.setHasFixedSize(true);
@@ -159,6 +229,8 @@ public class ViewOrder extends AppCompatActivity implements PaymentResultListene
                     mRecyclerView.setVisibility(View.VISIBLE);
                     viewOrdersBasket.setVisibility(View.GONE);
                     payment.setVisibility(View.VISIBLE);
+                    addressLayout.setVisibility(View.VISIBLE);
+
                     for (int i=0;i<list.size();i++)
                     {
                         int quantity=Integer.parseInt(list.get(i).getQuantity());
@@ -221,7 +293,7 @@ public class ViewOrder extends AppCompatActivity implements PaymentResultListene
             options.put("theme.color", "#3399cc");
             options.put("currency", "INR");
             options.put("amount", Integer.parseInt(orderTotal.getText().toString())*100);//300 X 100
-            options.put("prefill.email", "food.delivery.app@gmail.com");
+            options.put("prefill.email", email);
             options.put("prefill.contact",mobNo);
             checkout.open(activity, options);
         } catch(Exception e) {
@@ -234,6 +306,8 @@ public class ViewOrder extends AppCompatActivity implements PaymentResultListene
     @Override
     public void onPaymentSuccess(String s)
     {
+        address=spinner.getText().toString();
+
         String date= LocalDate.now().toString();
         String orderId=String.valueOf(System.currentTimeMillis());
         OrderModel orderModel=new OrderModel();
@@ -251,11 +325,11 @@ public class ViewOrder extends AppCompatActivity implements PaymentResultListene
         DatabaseReference db= FirebaseDatabase.getInstance().getReference("users").child("Customer").child("Orders").child(mobNo).child(orderId);
         db.setValue(orderModel);
 
-        DatabaseReference dbRef= FirebaseDatabase.getInstance().getReference("users").child("Restaurant").child("Orders").child(restaurantName).child("pending").child(orderId);
+        DatabaseReference dbRef= FirebaseDatabase.getInstance().getReference("users").child("Restaurant").child("Orders").child(restaurantMobileNo).child("pending").child(orderId);
         dbRef.setValue(orderModel);
 //        writeOrdersDetails(orderModel);
 //        SendNotif sendNotif=new SendNotif();
-        sendNotifications("e-bAVoMUQ8CgMb6fShk8hz:APA91bEWQQLTXrQeJQeHNgrvDC2WyPZg7cD_o73-C5MnWRh44JUNJiGHvXQntY9FaFFEN_fSMlwYNeosBmJ5zFQ5X7os1ibp9d7SE5k1R5cWfWKPMvhApopfVKZLo1KrlznhfoIJuZ1g","NEW ORDER","You got a new Order");
+        sendNotifications("dapL0QBkTzWi13xt67NkKV:APA91bG6wf5GRtHzomRveTfCcLHDMD4LKvezJj_9Pg0N2lsw8auB4UjAvD-al6azjfQGoJEKsdu4fW8iPeQSYnsRYG-eJG8n3GzwcFTtrKCRL5_p0eWK8RR02kQ5gby6SmMm5-h0Gzku","NEW ORDER","You got a new Order");
 //        sendNotif.sendNotifications("e-bAVoMUQ8CgMb6fShk8hz:APA91bEWQQLTXrQeJQeHNgrvDC2WyPZg7cD_o73-C5MnWRh44JUNJiGHvXQntY9FaFFEN_fSMlwYNeosBmJ5zFQ5X7os1ibp9d7SE5k1R5cWfWKPMvhApopfVKZLo1KrlznhfoIJuZ1g","Hi "+restaurantName,"You have a new order Request Have a Look");
         SharedPrefList.deleteInPref(getApplicationContext());
         Intent intent=new Intent(getApplicationContext(), SuccessfulPaymentPage.class);

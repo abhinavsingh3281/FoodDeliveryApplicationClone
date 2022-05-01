@@ -22,10 +22,9 @@ import android.widget.FrameLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.developer.fooddeliveryapp.Customer.CustomerHomePage;
 import com.developer.fooddeliveryapp.Notification.Token;
 import com.developer.fooddeliveryapp.R;
-import com.developer.fooddeliveryapp.Restaurant;
+import com.developer.fooddeliveryapp.RestaurantModel;
 import com.developer.fooddeliveryapp.Restraunt.RestaurantHomePage;
 import com.developer.fooddeliveryapp.SessionManager;
 import com.developer.fooddeliveryapp.User;
@@ -245,7 +244,7 @@ public class SignUpRestaurant extends AppCompatActivity {
                     @Override
                     public void onDataChange(@NonNull DataSnapshot snapshot) {
 
-                        writeAllUsers(strName, strEmail, strMob, strPassword, userType, address, pinCode, encodedImage);
+                        writeAllUsers(strName, strEmail, strMob, strPassword, userType, address, pinCode, encodedImage,restaurantName);
                         Register();
                     }
 
@@ -265,20 +264,20 @@ public class SignUpRestaurant extends AppCompatActivity {
     }
 
     public void writeNewUser(String name, String email, String mobileNo, String password, String role, String address, String pinCode,String image,String restaurantName,String gstNo,String uid) {
-        Restaurant user = new Restaurant(image,name, email, mobileNo, password,role,restaurantName,address,pinCode,gstNo,uid);
+        RestaurantModel user = new RestaurantModel(image,name, email, mobileNo, password,role,restaurantName,address,pinCode,gstNo,uid);
         databaseReferenceRestaurant.child(mobileNo).setValue(user);
         Toast.makeText(getApplicationContext(), "Data Send Successfully", Toast.LENGTH_SHORT).show();
     }
 
-    public void writeAllUsers(String name, String email, String mobileNo, String password, String role, String address, String pinCode,String image) {
-        User user = new User(name, email, mobileNo, password,role,address,pinCode,image);
+    public void writeAllUsers(String name, String email, String mobileNo, String password, String role, String address, String pinCode,String image,String restaurantName) {
+        User user = new User(name, email, mobileNo, password, role, address, pinCode, image, null, restaurantName);
         databaseReferenceAllUsers.child(mobileNo).setValue(user);
         Toast.makeText(getApplicationContext(), "Data Send Successfully", Toast.LENGTH_SHORT).show();
 
     }
 
     public void writeNewUserRestaurant(String name, String email, String mobileNo, String password, String role, String address, String pinCode,String image,String restaurantName,String gstNo,String uid) {
-        Restaurant user = new Restaurant(image,name, email, mobileNo, password,role,restaurantName,address,pinCode,gstNo,uid);
+        RestaurantModel user = new RestaurantModel(image,name, email, mobileNo, password,role,restaurantName,address,pinCode,gstNo,uid);
         databaseReferencePinCodeRestaurant.child("Delivery").child(pinCode).child(mobileNo).setValue(user);
         Toast.makeText(getApplicationContext(), "Data Send Successfully", Toast.LENGTH_SHORT).show();
 
