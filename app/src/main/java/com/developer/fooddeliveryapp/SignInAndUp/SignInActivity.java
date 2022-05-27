@@ -2,12 +2,14 @@ package com.developer.fooddeliveryapp.SignInAndUp;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.ActivityCompat;
 
+import android.Manifest;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
-import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
 import android.widget.Button;
 import android.widget.Toast;
@@ -16,17 +18,18 @@ import com.developer.fooddeliveryapp.Customer.CustomerHomePage;
 import com.developer.fooddeliveryapp.Delivery.DeliveryPartnerHomePage;
 import com.developer.fooddeliveryapp.Notification.Token;
 import com.developer.fooddeliveryapp.R;
-import com.developer.fooddeliveryapp.Restraunt.RestaurantHomePage;
+import com.developer.fooddeliveryapp.Restaurant.RestaurantHomePage;
 import com.developer.fooddeliveryapp.SessionManager;
 import com.developer.fooddeliveryapp.SignInAndUp.SignUp.SignUpMainActivity;
 import com.developer.fooddeliveryapp.User;
+import com.google.android.gms.location.FusedLocationProviderClient;
+import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.android.material.textfield.TextInputEditText;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -41,7 +44,8 @@ public class SignInActivity extends AppCompatActivity {
     TextInputEditText mobileNo, PassTB;
     Button LoginB;
     Button signup;
-    String role=null;
+
+    FusedLocationProviderClient fusedLocationProviderClient;
 
     FirebaseDatabase firebaseDatabase;
     DatabaseReference databaseReference;
@@ -57,6 +61,8 @@ public class SignInActivity extends AppCompatActivity {
         mobileNo = findViewById(R.id.mobileSignIn);
         PassTB = findViewById(R.id.passwordSignIn);
         signup=findViewById(R.id.btnSignUpCustomer);
+
+        getCurrentLocation();
 
 //        spinner = findViewById(R.id.spinnerTypeSignIn);
 
@@ -209,5 +215,46 @@ public class SignInActivity extends AppCompatActivity {
         return users;
     }
 
+
+    void getCurrentLocation() {
+        fusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(this);
+
+        if (ActivityCompat.checkSelfPermission(getApplicationContext(), Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
+//            getLocation();
+        } else {
+            ActivityCompat.requestPermissions(SignInActivity.this, new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, 44);
+        }
+    }
+
+//    private void getLocation() {
+//        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+//            // TODO: Consider calling
+//            //    ActivityCompat#requestPermissions
+//            // here to request the missing permissions, and then overriding
+//            //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
+//            //                                          int[] grantResults)
+//            // to handle the case where the user grants the permission. See the documentation
+//            // for ActivityCompat#requestPermissions for more details.
+//            return;
+//        }
+//        fusedLocationProviderClient.getLastLocation().addOnCompleteListener(new OnCompleteListener<Location>() {
+//            @Override
+//            public void onComplete(@NonNull Task<Location> task) {
+//                Location location = task.getResult();
+//                if (location != null) {
+//                    Geocoder geocoder = new Geocoder(SignInActivity.this, Locale.getDefault());
+//
+//                    try {
+//                        List<Address> addresses = geocoder.getFromLocation(location.getLatitude(), location.getLongitude(), 1);
+////                        Toast.makeText(SignInActivity.this, addresses.get(0).getFeatureName()+" ,"+addresses.get(0).getSubLocality()+" , "+addresses.get(0).getLocality() +" ,"+addresses.get(0).getAdminArea()+" ,"+addresses.get(0).getPostalCode(), Toast.LENGTH_SHORT).show();
+//
+//                    } catch (IOException e) {
+//                        e.printStackTrace();
+//                    }
+//
+//                }
+//            }
+//        });
+//    }
 
 }

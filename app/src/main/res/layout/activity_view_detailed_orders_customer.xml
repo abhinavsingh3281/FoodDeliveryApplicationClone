@@ -1,46 +1,53 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.swiperefreshlayout.widget.SwipeRefreshLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:id="@+id/swipeContainerViewMyDetailedOrdersCustomer"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
     tools:context=".Customer.ViewDetailedOrdersCustomer">
 
-    <ScrollView
+    <androidx.appcompat.widget.Toolbar
+        android:layout_width="match_parent"
+        android:layout_height="?attr/actionBarSize"
+        android:background="?attr/colorSecondaryVariant"
+        android:elevation="4dp"
+        android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar"
+        app:popupTheme="@style/ThemeOverlay.AppCompat.Light" >
+        <ImageButton
+            android:id="@+id/btnBackDetailedOrder"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/ic_back"
+            android:background="@android:color/transparent"
+            app:iconGravity="top"
+            />
+    </androidx.appcompat.widget.Toolbar>
+    <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
+        android:id="@+id/swipeContainerViewMyDetailedOrdersCustomer"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_marginBottom="10dp"
+        >
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
         >
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical">
-
-            <ImageButton
-                android:id="@+id/btnBackDetailedOrder"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="10dp"
-                android:layout_marginLeft="10dp"
-                android:layout_marginBottom="5dp"
-                android:gravity="left"
-                android:src="@drawable/ic_back_black"
-                android:background="@android:color/transparent"
-                app:iconGravity="top"
-                />
-
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_marginTop="10dp"
+            android:layout_marginBottom="10dp"
             android:layout_marginLeft="10dp"
             android:orientation="horizontal">
             <TextView
-                android:layout_marginLeft="10dp"
-                android:layout_marginTop="10dp"
-                android:layout_marginBottom="10dp"
                 android:textStyle="bold"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -50,8 +57,6 @@
 
             <TextView
                 android:id="@+id/orderIdCustomerDetailedOrder"
-                android:layout_marginTop="10dp"
-                android:layout_marginBottom="10dp"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:textColor="@color/black"
@@ -59,10 +64,9 @@
                 android:textSize="18dp"/>
 
         </LinearLayout>
-
         <androidx.cardview.widget.CardView
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
+            android:layout_height="wrap_content"
             android:layout_marginTop="5dp"
             android:layout_marginLeft="15dp"
             android:layout_marginRight="15dp"
@@ -72,7 +76,7 @@
 
             <LinearLayout
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"
+                android:layout_height="wrap_content"
                 android:orientation="vertical">
 
                 <LinearLayout
@@ -208,7 +212,7 @@
 
         <androidx.cardview.widget.CardView
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
+            android:layout_height="wrap_content"
             android:layout_marginTop="10dp"
             android:layout_marginLeft="15dp"
             android:layout_marginRight="15dp"
@@ -374,7 +378,7 @@
         </LinearLayout>
         <androidx.cardview.widget.CardView
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
+            android:layout_height="wrap_content"
             android:layout_marginTop="10dp"
             app:cardElevation="10dp"
             >
@@ -420,4 +424,5 @@
     </LinearLayout>
     </ScrollView>
 
-</androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
+    </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
+</LinearLayout>

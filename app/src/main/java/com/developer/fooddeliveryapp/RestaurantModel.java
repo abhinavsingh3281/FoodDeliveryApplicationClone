@@ -13,8 +13,10 @@ public class RestaurantModel {
     private String pinCode;
     private String gstNo;
     private String uid;
+    private String longitude;
+    private String latitude;
 
-    public RestaurantModel(String image, String name, String email, String mobileNo, String password, String role, String restaurantName, String address, String pinCode, String gstNo, String uid) {
+    public RestaurantModel(String image, String name, String email, String mobileNo, String password, String role, String restaurantName, String address, String pinCode, String gstNo, String uid,String longitude,String latitude) {
         this.image = image;
         this.name = name;
         this.email = email;
@@ -26,6 +28,8 @@ public class RestaurantModel {
         this.pinCode = pinCode;
         this.gstNo = gstNo;
         this.uid = uid;
+        this.longitude=longitude;
+        this.latitude=latitude;
     }
 
     public RestaurantModel(String image, String name, String email, String mobileNo, String password, String role, String restaurantName, String address, String pinCode) {
@@ -126,5 +130,21 @@ public class RestaurantModel {
 
     public void setUid(String uid) {
         this.uid = uid;
+    }
+
+    public String getLongitude() {
+        return longitude;
+    }
+
+    public void setLongitude(String longitude) {
+        this.longitude = longitude;
+    }
+
+    public String getLatitude() {
+        return latitude;
+    }
+
+    public void setLatitude(String latitude) {
+        this.latitude = latitude;
     }
 }

@@ -5,11 +5,17 @@ import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.ActivityCompat;
 
+import android.Manifest;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.location.Address;
+import android.location.Geocoder;
+import android.location.Location;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.StrictMode;
@@ -25,9 +31,11 @@ import android.widget.Toast;
 import com.developer.fooddeliveryapp.Notification.Token;
 import com.developer.fooddeliveryapp.R;
 import com.developer.fooddeliveryapp.RestaurantModel;
-import com.developer.fooddeliveryapp.Restraunt.RestaurantHomePage;
+import com.developer.fooddeliveryapp.Restaurant.RestaurantHomePage;
 import com.developer.fooddeliveryapp.SessionManager;
 import com.developer.fooddeliveryapp.User;
+import com.google.android.gms.location.FusedLocationProviderClient;
+import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.android.material.textfield.TextInputEditText;
@@ -44,14 +52,17 @@ import com.makeramen.roundedimageview.RoundedImageView;
 
 import java.io.ByteArrayOutputStream;
 import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.io.InputStream;
+import java.util.List;
+import java.util.Locale;
 
 public class SignUpRestaurant extends AppCompatActivity {
-    TextInputEditText Email, Pass,name,mobNo,confirmPass,etPinCode,etAddress,etGstNo,etRestaurantName;
+    TextInputEditText Email, Pass,name,mobNo,confirmPass,etPinCode,etAddress,etGstNo,etRestaurantName,etLongitude,etLatitude;
     Button LoginB;
     FirebaseAuth firebaseAuth;
 
-    private TextView textAddImage;
+    private TextView textAddImage,currentLocationBtn;
 
     private String encodedImage;
     private RoundedImageView imageProfile;
@@ -61,6 +72,8 @@ public class SignUpRestaurant extends AppCompatActivity {
 
     private DatabaseReference databaseReferenceRestaurant;
     private DatabaseReference databaseReferencePinCodeRestaurant;
+
+    FusedLocationProviderClient fusedLocationProviderClient;
 
     String strName, strMob,strEmail,strPassword,userType,pinCode,address,restaurantName,gstNo;
 
@@ -78,6 +91,11 @@ public class SignUpRestaurant extends AppCompatActivity {
         name=findViewById(R.id.nameSignUpRestaurant);
         mobNo=findViewById(R.id.mobileNumberSignUpRestaurant);
         confirmPass=findViewById(R.id.ConfirmPasswordSignUpRestaurant);
+
+        etLongitude=findViewById(R.id.longitudeRestaurant);
+        etLatitude=findViewById(R.id.latitudeRestaurant);
+
+        currentLocationBtn=findViewById(R.id.currentLocationSignUp);
 
         etPinCode=findViewById(R.id.pinCodeSignUpRestaurant);
         etAddress=findViewById(R.id.addressSignUpRestaurant);
@@ -114,7 +132,55 @@ public class SignUpRestaurant extends AppCompatActivity {
             }
         });
 
+        currentLocationBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                getCurrentLocation();
+            }
+        });
 
+
+    }
+    void getCurrentLocation() {
+        fusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(this);
+
+        if (ActivityCompat.checkSelfPermission(getApplicationContext(), Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
+            getLocation();
+        } else {
+            ActivityCompat.requestPermissions(SignUpRestaurant.this, new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, 44);
+        }
+    }
+    private void getLocation() {
+        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+            // TODO: Consider calling
+            //    ActivityCompat#requestPermissions
+            // here to request the missing permissions, and then overriding
+            //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
+            //                                          int[] grantResults)
+            // to handle the case where the user grants the permission. See the documentation
+            // for ActivityCompat#requestPermissions for more details.
+            return;
+        }
+        fusedLocationProviderClient.getLastLocation().addOnCompleteListener(new OnCompleteListener<Location>() {
+            @Override
+            public void onComplete(@NonNull Task<Location> task) {
+                Location location = task.getResult();
+                if (location != null) {
+                    Geocoder geocoder = new Geocoder(SignUpRestaurant.this, Locale.getDefault());
+
+                    try {
+                        List<Address> addresses = geocoder.getFromLocation(location.getLatitude(), location.getLongitude(), 1);
+                        Toast.makeText(SignUpRestaurant.this, addresses.get(0).getFeatureName()+" ,"+addresses.get(0).getSubLocality()+" , "+addresses.get(0).getLocality() +" ,"+addresses.get(0).getAdminArea()+" ,"+addresses.get(0).getPostalCode(), Toast.LENGTH_SHORT).show();
+                        etLongitude.setText(String.valueOf(addresses.get(0).getLongitude()));
+                        etLatitude.setText(String.valueOf(addresses.get(0).getLatitude()));
+
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+
+                }
+            }
+        });
     }
     private void SetToken(String uid) {
         final String[] refreshToken = {null};
@@ -151,8 +217,8 @@ public class SignUpRestaurant extends AppCompatActivity {
                             Log.d("TAG", "createUserWithEmail:success");
                             FirebaseUser user = firebaseAuth.getCurrentUser();
 
-                            writeNewUser(strName, strEmail, strMob, strPassword, userType, address, pinCode, encodedImage,restaurantName,gstNo,user.getUid());
-                            writeNewUserRestaurant(strName, strEmail, strMob, strPassword, userType, address, pinCode, encodedImage,restaurantName,gstNo,user.getUid());
+                            writeNewUser(strName, strEmail, strMob, strPassword, userType, address, pinCode, encodedImage,restaurantName,gstNo,user.getUid(),etLongitude.getText().toString(),etLatitude.getText().toString());
+                            writeNewUserRestaurant(strName, strEmail, strMob, strPassword, userType, address, pinCode, encodedImage,restaurantName,gstNo,user.getUid(),etLongitude.getText().toString(),etLatitude.getText().toString());
 
                             SessionManager session = new SessionManager(getApplicationContext());
                             session.createLoginSession(user.getUid(),userType,strMob,encodedImage,strName,strEmail,address,pinCode,restaurantName);
@@ -263,8 +329,8 @@ public class SignUpRestaurant extends AppCompatActivity {
         StrictMode.setThreadPolicy(policy);
     }
 
-    public void writeNewUser(String name, String email, String mobileNo, String password, String role, String address, String pinCode,String image,String restaurantName,String gstNo,String uid) {
-        RestaurantModel user = new RestaurantModel(image,name, email, mobileNo, password,role,restaurantName,address,pinCode,gstNo,uid);
+    public void writeNewUser(String name, String email, String mobileNo, String password, String role, String address, String pinCode,String image,String restaurantName,String gstNo,String uid,String longitude,String latitude) {
+        RestaurantModel user = new RestaurantModel(image,name, email, mobileNo, password,role,restaurantName,address,pinCode,gstNo,uid,longitude,latitude);
         databaseReferenceRestaurant.child(mobileNo).setValue(user);
         Toast.makeText(getApplicationContext(), "Data Send Successfully", Toast.LENGTH_SHORT).show();
     }
@@ -276,8 +342,8 @@ public class SignUpRestaurant extends AppCompatActivity {
 
     }
 
-    public void writeNewUserRestaurant(String name, String email, String mobileNo, String password, String role, String address, String pinCode,String image,String restaurantName,String gstNo,String uid) {
-        RestaurantModel user = new RestaurantModel(image,name, email, mobileNo, password,role,restaurantName,address,pinCode,gstNo,uid);
+    public void writeNewUserRestaurant(String name, String email, String mobileNo, String password, String role, String address, String pinCode,String image,String restaurantName,String gstNo,String uid,String longitude,String latitude) {
+        RestaurantModel user = new RestaurantModel(image,name, email, mobileNo, password,role,restaurantName,address,pinCode,gstNo,uid,longitude,latitude);
         databaseReferencePinCodeRestaurant.child("Delivery").child(pinCode).child(mobileNo).setValue(user);
         Toast.makeText(getApplicationContext(), "Data Send Successfully", Toast.LENGTH_SHORT).show();
 

@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.swiperefreshlayout.widget.SwipeRefreshLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/swipeContainerViewMyDetailedOrdersCustomer"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    tools:context=".Delivery.ViewOrderInDetailedView">
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_marginBottom="10dp"
+        >
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+            <ImageButton
+                android:id="@+id/btnBackDetailedOrder"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
+                android:layout_marginLeft="10dp"
+                android:layout_marginBottom="5dp"
+                android:gravity="left"
+                android:src="@drawable/ic_back_black"
+                android:background="@android:color/transparent"
+                app:iconGravity="top"
+                />
+
+            <androidx.cardview.widget.CardView
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_marginTop="20dp"
+                android:layout_marginLeft="15dp"
+                android:layout_marginRight="15dp"
+                android:layout_marginBottom="20dp"
+                app:cardElevation="10dp"
+                android:elevation="20dp"
+                app:cardCornerRadius="10dp">
+            <LinearLayout
+                android:id="@+id/linearLayoutAcceptRequest"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textStyle="bold"
+                    android:layout_gravity="center"
+                    android:textColor="@color/black"
+                    android:layout_marginTop="10dp"
+                    android:text="Do you want to accept Request ?"
+                    android:textSize="18dp"/>
+                <Button
+                    android:id="@+id/btnAcceptDelivery"
+                    android:layout_width="wrap_content"
+                    style="@style/Widget.MaterialComponents.Button.TextButton.Dialog"
+                    android:textSize="15dp"
+                    android:gravity="center"
+                    android:layout_gravity="center"
+                    android:layout_height="wrap_content"
+                    android:text="Accept Delivery"
+                    />
+            </LinearLayout>
+            </androidx.cardview.widget.CardView>
+        </LinearLayout>
+
+    </ScrollView>
+
+</androidx.swiperefreshlayout.widget.SwipeRefreshLayout>

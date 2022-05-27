@@ -5,98 +5,98 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:id="@+id/drawer_layout"
-    tools:context=".Restraunt.RestaurantHomePage">
-
-<LinearLayout
-    android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:orientation="vertical">
+    tools:context=".Restaurant.RestaurantHomePage">
+    <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:id="@+id/swipeContainerRestaurantHomePage">
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical">
 
-        <androidx.appcompat.widget.Toolbar
-            android:id="@+id/toolbar"
-            android:layout_width="match_parent"
-            android:layout_height="?attr/actionBarSize"
-            android:background="@color/teal_700"
-            android:elevation="4dp"
-            android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar"
-            app:popupTheme="@style/ThemeOverlay.AppCompat.Light" >
-
-            <ImageButton
-                android:id="@+id/button_insert"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:src="@drawable/ic_add_white"
-                android:layout_gravity="right"
-                android:backgroundTint="@color/white"
-                android:layout_marginRight="25dp"
-                android:background="@android:color/transparent"
-                />
-        </androidx.appcompat.widget.Toolbar>
-
-        <FrameLayout
-            android:id="@+id/fragment_container"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent" />
-<!--        <ImageButton-->
-<!--            android:id="@+id/button_insert"-->
-<!--            android:layout_width="match_parent"-->
-<!--            android:layout_height="wrap_content"-->
-<!--            android:textSize="20dp"-->
-<!--            style="@style/Widget.MaterialComponents.ExtendedFloatingActionButton.Icon"-->
-<!--            android:layout_marginLeft="30dp"-->
-<!--            android:layout_marginRight="30dp"-->
-<!--            android:layout_marginTop="15dp"-->
-<!--            android:layout_marginBottom="10dp"-->
-<!--            android:src="@drawable/ic_cart"-->
-<!--            android:layout_alignParentStart="true"-->
-<!--            android:layout_alignParentEnd="true"-->
-<!--            android:layout_alignParentBottom="true"-->
-<!--            android:text="insert"-->
-<!--            />-->
-
-
         <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
+            android:layout_height="wrap_content"
             android:orientation="vertical">
+
+            <androidx.appcompat.widget.Toolbar
+                android:id="@+id/toolbar"
+                android:layout_width="match_parent"
+                android:layout_height="?attr/actionBarSize"
+                android:background="@color/teal_700"
+                android:elevation="4dp"
+                android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar"
+                app:popupTheme="@style/ThemeOverlay.AppCompat.Light" >
+
+                <ImageButton
+                    android:id="@+id/button_insert"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:src="@drawable/ic_add_white"
+                    android:layout_gravity="right"
+                    android:backgroundTint="@color/white"
+                    android:layout_marginRight="25dp"
+                    android:background="@android:color/transparent"
+                    />
+            </androidx.appcompat.widget.Toolbar>
+
+            <FrameLayout
+                android:id="@+id/fragment_container"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent" />
+            <!--        <ImageButton-->
+            <!--            android:id="@+id/button_insert"-->
+            <!--            android:layout_width="match_parent"-->
+            <!--            android:layout_height="wrap_content"-->
+            <!--            android:textSize="20dp"-->
+            <!--            style="@style/Widget.MaterialComponents.ExtendedFloatingActionButton.Icon"-->
+            <!--            android:layout_marginLeft="30dp"-->
+            <!--            android:layout_marginRight="30dp"-->
+            <!--            android:layout_marginTop="15dp"-->
+            <!--            android:layout_marginBottom="10dp"-->
+            <!--            android:src="@drawable/ic_cart"-->
+            <!--            android:layout_alignParentStart="true"-->
+            <!--            android:layout_alignParentEnd="true"-->
+            <!--            android:layout_alignParentBottom="true"-->
+            <!--            android:text="insert"-->
+            <!--            />-->
+
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:orientation="vertical">
+
+            </LinearLayout>
+
+
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/recyclerView"
+                android:layout_width="match_parent"
+                android:layout_marginLeft="10dp"
+                android:layout_marginRight="10dp"
+                android:layout_height="wrap_content"
+                android:background="@android:color/white"
+                android:padding="4dp"
+                android:scrollbars="vertical"
+                />
 
         </LinearLayout>
 
-
-        <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/recyclerView"
-            android:layout_width="match_parent"
-            android:layout_marginLeft="10dp"
-            android:layout_marginRight="10dp"
-            android:layout_height="wrap_content"
-            android:background="@android:color/white"
-            android:padding="4dp"
-            android:scrollbars="vertical"
-            />
-
     </LinearLayout>
 
-</LinearLayout>
-
-
+    </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
         <!--this the navigation view which draws
             and shows the navigation drawer-->
         <!--include the menu created in the menu folder-->
-        <com.google.android.material.navigation.NavigationView
-            android:id="@+id/nav_view"
-            android:layout_width="wrap_content"
-            app:headerLayout="@layout/nav_header"
-            android:layout_height="match_parent"
-            android:layout_gravity="start"
-            app:menu="@menu/navigation_menu_restaurant" />
-
-
-
-
+    <com.google.android.material.navigation.NavigationView
+        android:id="@+id/nav_view"
+        android:layout_width="wrap_content"
+        app:headerLayout="@layout/nav_header"
+        android:layout_height="match_parent"
+        android:layout_gravity="start"
+        app:menu="@menu/navigation_menu_restaurant" />
 
 </androidx.drawerlayout.widget.DrawerLayout>

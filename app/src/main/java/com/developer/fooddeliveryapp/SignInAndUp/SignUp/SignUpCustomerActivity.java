@@ -25,7 +25,6 @@ import android.widget.Toast;
 import com.developer.fooddeliveryapp.AddressModel;
 import com.developer.fooddeliveryapp.Customer.CustomerHomePage;
 import com.developer.fooddeliveryapp.R;
-import com.developer.fooddeliveryapp.Restraunt.RestaurantHomePage;
 import com.developer.fooddeliveryapp.SessionManager;
 import com.developer.fooddeliveryapp.User;
 import com.google.android.gms.tasks.OnCompleteListener;

@@ -14,6 +14,21 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.FoodDeliveryApp">
         <activity
+            android:name=".Delivery.DeliveryPartnerMyOrderPage"
+            android:exported="false" />
+        <activity
+            android:name=".Delivery.ViewAllPendingRequest"
+            android:exported="false" />
+        <activity
+            android:name=".Delivery.TrackDeliveryStatus"
+            android:exported="false" />
+        <activity
+            android:name=".Delivery.ViewOrderInDetailedView"
+            android:exported="false" />
+        <activity
+            android:name=".Delivery.DeliveryPartnerViewAccountDetails"
+            android:exported="false" />
+        <activity
             android:name=".Delivery.DeliveryPartnerHomePage"
             android:exported="false" />
         <activity
@@ -29,13 +44,13 @@
             android:name=".Customer.AddNewAddressCustomer"
             android:exported="false" />
         <activity
-            android:name=".Restraunt.ViewAllMyOrdersRestaurant"
+            android:name=".Restaurant.ViewAllMyOrdersRestaurant"
             android:exported="false" />
         <activity
-            android:name=".Restraunt.ViewDetailedPendingRequest"
+            android:name=".Restaurant.ViewDetailedPendingRequest"
             android:exported="false" />
         <activity
-            android:name=".Restraunt.ViewAllPendingRequestRestaurant"
+            android:name=".Restaurant.ViewAllPendingRequestRestaurant"
             android:exported="false" />
         <activity
             android:name=".Customer.ViewMyOrders"
@@ -68,10 +83,10 @@
             android:name=".Customer.CustomerHomePage"
             android:exported="true" />
         <activity
-            android:name=".Restraunt.AddNewOrder"
+            android:name=".Restaurant.AddNewOrder"
             android:exported="true" />
         <activity
-            android:name=".Restraunt.RestaurantHomePage"
+            android:name=".Restaurant.RestaurantHomePage"
             android:exported="true" />
         <activity
             android:name=".SignInAndUp.SignUp.SignUpCustomerActivity"

@@ -21,7 +21,7 @@ public class SplashActivity extends Activity {
 
         imageView = findViewById(R.id.img);
 
-        imageView.setImageResource(R.drawable.gifstart);
+        imageView.setImageResource(R.drawable.gifsplash);
 
         new Handler().postDelayed(new Runnable() {
 
@@ -30,6 +30,6 @@ public class SplashActivity extends Activity {
                 Intent intent = new Intent(SplashActivity.this, SignInActivity.class);
                 startActivity(intent);
             }
-        }, 4000);
+        }, 5000);
     }
 }

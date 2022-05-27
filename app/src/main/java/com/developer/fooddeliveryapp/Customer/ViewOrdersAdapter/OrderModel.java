@@ -15,6 +15,9 @@ public class OrderModel {
     private String status;
     private List<ExampleItemCustomerListCart> food;
     private String mobileNo;
+    private String restaurantMobileNumber;
+    private String customerLongitude;
+    private String customerLatitude;
 
     public OrderModel() {
     }
@@ -30,6 +33,20 @@ public class OrderModel {
         this.status = status;
         this.food = food;
         this.mobileNo = mobileNo;
+    }
+
+    public OrderModel(String name, String address, String restaurantName, String price, String email, String date, String orderId, String status, List<ExampleItemCustomerListCart> food, String mobileNo, String restaurantMobileNumber) {
+        this.name = name;
+        this.address = address;
+        this.restaurantName = restaurantName;
+        this.price = price;
+        this.email = email;
+        this.date = date;
+        this.orderId = orderId;
+        this.status = status;
+        this.food = food;
+        this.mobileNo = mobileNo;
+        this.restaurantMobileNumber = restaurantMobileNumber;
     }
 
     public String getName() {
@@ -110,5 +127,29 @@ public class OrderModel {
 
     public void setStatus(String status) {
         this.status = status;
+    }
+
+    public String getRestaurantMobileNumber() {
+        return restaurantMobileNumber;
+    }
+
+    public void setRestaurantMobileNumber(String restaurantMobileNumber) {
+        this.restaurantMobileNumber = restaurantMobileNumber;
+    }
+
+    public String getCustomerLongitude() {
+        return customerLongitude;
+    }
+
+    public void setCustomerLongitude(String customerLongitude) {
+        this.customerLongitude = customerLongitude;
+    }
+
+    public String getCustomerLatitude() {
+        return customerLatitude;
+    }
+
+    public void setCustomerLatitude(String customerLatitude) {
+        this.customerLatitude = customerLatitude;
     }
 }

@@ -29,11 +29,9 @@ public class AddNewAddressCustomer extends AppCompatActivity {
         btnProceedToCartCustomer=findViewById(R.id.btnProceedToCartCustomer);
 
 
-
         Intent intent=getIntent();
         mobileNumber=intent.getStringExtra("mobileNo");
-        restaurantName=intent.getStringExtra("restaurantName");
-        restaurantMob=intent.getStringExtra("restaurantMob");
+
 
         btnProceedToCartCustomer.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -43,11 +41,14 @@ public class AddNewAddressCustomer extends AppCompatActivity {
 
                 DatabaseReference databaseReference= FirebaseDatabase.getInstance().getReference("users").child("Customer").child("Address").child(mobileNumber).child(UUID.randomUUID().toString());
                 databaseReference.setValue(addressModel.getAddress());
-                Intent intent1=new Intent(getApplicationContext(),ViewOrder.class);
-                intent1.putExtra("restaurantName",restaurantName);
-                intent1.putExtra("restaurantMob",restaurantMob);
+                Intent intent1=new Intent(getApplicationContext(),MyAccountDetails.class);
                 startActivity(intent1);
             }
         });
+    }
+
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
     }
 }

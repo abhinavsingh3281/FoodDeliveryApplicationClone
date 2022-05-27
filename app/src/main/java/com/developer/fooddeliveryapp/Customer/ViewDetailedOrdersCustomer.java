@@ -2,32 +2,22 @@ package com.developer.fooddeliveryapp.Customer;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.content.res.ResourcesCompat;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import android.content.Intent;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.graphics.Color;
-import android.graphics.drawable.BitmapDrawable;
-import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.developer.fooddeliveryapp.Customer.ViewDetailedPendingRequestAdapterCustomer.DetailedPendingRequestModelCustomer;
 import com.developer.fooddeliveryapp.Customer.ViewDetailedPendingRequestAdapterCustomer.ViewDetailedPendingRequestAdapterCustomer;
-import com.developer.fooddeliveryapp.Customer.ViewOrdersAdapter.ExampleAdapterOrdersCustomer;
 import com.developer.fooddeliveryapp.Customer.ViewOrdersAdapter.OrderModel;
 import com.developer.fooddeliveryapp.R;
-import com.developer.fooddeliveryapp.Restraunt.ViewDetailedPendingRequestAdapter.DetailedPendingRequestModel;
-import com.developer.fooddeliveryapp.Restraunt.ViewDetailedPendingRequestAdapter.ViewDetailedPendingRequestAdapter;
-import com.developer.fooddeliveryapp.Restraunt.ViewOrdersAdapter.ExampleAdapterOrdersRestaurant;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -49,8 +39,8 @@ public class ViewDetailedOrdersCustomer extends AppCompatActivity {
     SwipeRefreshLayout swipeRefreshLayout;
 
 
-    ImageView image1_detailedOrder,image2_detailedOrder;
-    TextView orderIdCustomerDetailedOrder,orderTotalDetailedOrders,amountInDetailedOrders,addressViewDetailedOrders,restaurantNameViewDetailedOrders,text1_detailedOrder,text2_detailedOrder,dash_1,dash_2,dash_3;
+    ImageView image1_detailedOrder,image2_detailedOrder,image3_detailedOrder,image4_detailedOrder;
+    TextView orderIdCustomerDetailedOrder,orderTotalDetailedOrders,amountInDetailedOrders,addressViewDetailedOrders,restaurantNameViewDetailedOrders,text1_detailedOrder,text2_detailedOrder,text3_detailedOrder,text4_detailedOrder,dash_1,dash_2,dash_3;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -70,6 +60,8 @@ public class ViewDetailedOrdersCustomer extends AppCompatActivity {
 
         image1_detailedOrder=findViewById(R.id.image1_detailedOrder);
         image2_detailedOrder=findViewById(R.id.image2_detailedOrder);
+        image3_detailedOrder=findViewById(R.id.image3_detailedOrder);
+        image4_detailedOrder=findViewById(R.id.image4_detailedOrder);
 
         orderIdCustomerDetailedOrder=findViewById(R.id.orderIdCustomerDetailedOrder);
         amountInDetailedOrders=findViewById(R.id.amountInDetailedOrders);
@@ -79,6 +71,8 @@ public class ViewDetailedOrdersCustomer extends AppCompatActivity {
 
         text1_detailedOrder=findViewById(R.id.text1_detailedOrder);
         text2_detailedOrder=findViewById(R.id.text2_detailedOrder);
+        text3_detailedOrder=findViewById(R.id.text3_detailedOrder);
+        text4_detailedOrder=findViewById(R.id.text4_detailedOrder);
 
         dash_1=findViewById(R.id.dash_1);
         dash_2=findViewById(R.id.dash_2);
@@ -137,6 +131,30 @@ public class ViewDetailedOrdersCustomer extends AppCompatActivity {
                     dash_1.setTextColor(Color.parseColor("#FFFD4A08"));
                     image2_detailedOrder.setImageResource(R.drawable.ic_kitchen_red);
                     text2_detailedOrder.setTextColor(Color.parseColor("#FFFD4A08"));
+                }
+                if (list.get(0).getStatus().equals("Order on the Way"))
+                {
+                    dash_1.setTextColor(Color.parseColor("#FFFD4A08"));
+                    image2_detailedOrder.setImageResource(R.drawable.ic_kitchen_red);
+                    text2_detailedOrder.setTextColor(Color.parseColor("#FFFD4A08"));
+
+                    dash_2.setTextColor(Color.parseColor("#FFFD4A08"));
+                    image3_detailedOrder.setImageResource(R.drawable.ic_order_red);
+                    text3_detailedOrder.setTextColor(Color.parseColor("#FFFD4A08"));
+                }
+                if (list.get(0).getStatus().equals("Delivered"))
+                {
+                    dash_1.setTextColor(Color.parseColor("#FFFD4A08"));
+                    image2_detailedOrder.setImageResource(R.drawable.ic_kitchen_red);
+                    text2_detailedOrder.setTextColor(Color.parseColor("#FFFD4A08"));
+
+                    dash_2.setTextColor(Color.parseColor("#FFFD4A08"));
+                    image3_detailedOrder.setImageResource(R.drawable.ic_order_red);
+                    text3_detailedOrder.setTextColor(Color.parseColor("#FFFD4A08"));
+
+                    dash_3.setTextColor(Color.parseColor("#FFFD4A08"));
+                    image4_detailedOrder.setImageResource(R.drawable.ic_delivered_red);
+                    text4_detailedOrder.setTextColor(Color.parseColor("#FFFD4A08"));
                 }
             }
 
