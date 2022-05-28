@@ -43,7 +43,7 @@ public class ViewAllPendingRequest extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_view_all_pending_request);
-        noRequestDeliveryPartnerText=findViewById(R.id.noRequestDeliveryPartnerText);
+        noRequestDeliveryPartnerText=findViewById(R.id.noDeliveryPartnerText);
         btnBack=findViewById(R.id.btn_Back_DeliveryPendingRequest);
 
         SessionManager session = new SessionManager(getApplicationContext());

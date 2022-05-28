@@ -15,6 +15,8 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
+import android.widget.ImageButton;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -53,13 +55,17 @@ import retrofit2.Callback;
 import retrofit2.Response;
 
 public class TrackDeliveryStatus extends AppCompatActivity {
-    TextView yourLocation,restaurantLocation,yourLocationAtRestaurant,customerLocation,distanceFromCurrentToRestaurant,addressCustomerInDeliverySection,restaurantNameInDeliverySection,distanceFromRestaurantToCustomer;
+    TextView yourLocation,restaurantLocation,yourLocationAtRestaurant,customerLocation,distanceFromCurrentToRestaurant,addressCustomerInDeliverySection,restaurantNameInDeliverySection,distanceFromRestaurantToCustomer,noteDeliveryPartner,noteDeliveryPartnerDelivered;
     FusedLocationProviderClient fusedLocationProviderClient;
     ArrayList<DeliveryHomePageModel>listPrivate;
     Button btnNavigateDelivery,btnNavigateDeliveryToCustomer,btnArrivedAtRestaurantDeliveryPage,btnDeliveredOrderDeliveryPage;
     List<Address>addresses;
     SwipeRefreshLayout swipeRefreshLayout;
     String mobileNo;
+
+    ImageButton btnBack;
+
+    LinearLayout linearLayoutLocationToRestaurant;
 
     private APIService apiService;
 
@@ -83,21 +89,18 @@ public class TrackDeliveryStatus extends AppCompatActivity {
         addressCustomerInDeliverySection=findViewById(R.id.addressCustomerInDeliverySection);
         restaurantNameInDeliverySection=findViewById(R.id.restaurantNameInDeliverySection);
         distanceFromRestaurantToCustomer=findViewById(R.id.distanceFromRestaurantToCustomer);
-
+        noteDeliveryPartner=findViewById(R.id.noteDeliveryPartner);
+        noteDeliveryPartnerDelivered=findViewById(R.id.noteDeliveryPartnerDelivered);
 
         btnNavigateDelivery=findViewById(R.id.btnNavigateDelivery);
         btnNavigateDeliveryToCustomer=findViewById(R.id.btnNavigateDeliveryToCustomer);
         btnArrivedAtRestaurantDeliveryPage=findViewById(R.id.btnArrivedAtRestaurantDeliveryPage);
         btnDeliveredOrderDeliveryPage=findViewById(R.id.btnDeliveredOrderDeliveryPage);
 
-        swipeRefreshLayout=findViewById(R.id.swipeContainerViewMyDetailedOrdersDelivery);
-        swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
-            @Override
-            public void onRefresh() {
-                swipeRefreshLayout.setRefreshing(false);
-                getCurrentLocation();
-            }
-        });
+        btnBack=findViewById(R.id.btnBackTrackDelivery);
+
+
+        linearLayoutLocationToRestaurant=findViewById(R.id.linearLayoutLocationToRestaurant);
 
         listPrivate = new ArrayList<>();
 
@@ -110,6 +113,24 @@ public class TrackDeliveryStatus extends AppCompatActivity {
         addressCustomerInDeliverySection.setText(listPrivate.get(0).getName() +"\n"+listPrivate.get(0).getUserAddress());
         restaurantNameInDeliverySection.setText(listPrivate.get(0).getRestaurantName() +"\n"+listPrivate.get(0).getRestaurantAddress());
         yourLocationAtRestaurant.setText(listPrivate.get(0).getRestaurantName() +"\n"+listPrivate.get(0).getRestaurantAddress());
+
+        checkArrivedAtRestaurantOrNot();
+        swipeRefreshLayout=findViewById(R.id.swipeContainerViewMyDetailedOrdersDelivery);
+        swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+                swipeRefreshLayout.setRefreshing(false);
+                checkArrivedAtRestaurantOrNot();
+                getCurrentLocation();
+            }
+        });
+
+        btnBack.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                onBackPressed();
+            }
+        });
 
         btnNavigateDelivery.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -147,6 +168,7 @@ public class TrackDeliveryStatus extends AppCompatActivity {
                             @Override
                             public void OnClick() {
                                 arrivedAtRestaurant();
+                                checkArrivedAtRestaurantOrNot();
                             }
                         })
                         .build();
@@ -182,6 +204,31 @@ public class TrackDeliveryStatus extends AppCompatActivity {
 
     }
 
+    private void checkArrivedAtRestaurantOrNot()
+    {
+        DatabaseReference db= FirebaseDatabase.getInstance().getReference("users").child("Customer").child("Orders").child(listPrivate.get(0).getCustomerMobileNo()).child(listPrivate.get(0).getOrderId());
+        db.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                String status=snapshot.child("status").getValue(String.class);
+
+                assert status != null;
+                if(status.equals("Order on the Way"))
+                {
+                    btnArrivedAtRestaurantDeliveryPage.setClickable(false);
+                    linearLayoutLocationToRestaurant.setVisibility(View.GONE);
+                    noteDeliveryPartner.setVisibility(View.VISIBLE);
+                    noteDeliveryPartnerDelivered.setVisibility(View.VISIBLE);
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+
+            }
+        });
+
+    }
     private void arrivedAtRestaurant()
     {
         DatabaseReference db= FirebaseDatabase.getInstance().getReference("users").child("Customer").child(listPrivate.get(0).getCustomerMobileNo());

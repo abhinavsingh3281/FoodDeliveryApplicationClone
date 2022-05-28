@@ -74,7 +74,7 @@ public class DeliveryPartnerHomePage extends AppCompatActivity implements Naviga
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_delivery_partner_home_page);
-        noDeliveryPartnerText=findViewById(R.id.noDeliveryPartnerText);
+        noDeliveryPartnerText=(TextView) findViewById(R.id.noRequestDeliveryPartnerText);
 
         SessionManager session = new SessionManager(getApplicationContext());
         HashMap<String, String> user = session.getUserDetails();
@@ -185,6 +185,16 @@ public class DeliveryPartnerHomePage extends AppCompatActivity implements Naviga
         mRecyclerView.setHasFixedSize(true);
         mLayoutManager = new LinearLayoutManager(this);
 
+//        if(list.isEmpty())
+//        {
+//            mRecyclerView.setVisibility(View.VISIBLE);
+//            noDeliveryPartnerText.setVisibility(View.GONE);
+//        }
+//        else {
+//            mRecyclerView.setVisibility(View.GONE);
+//            noDeliveryPartnerText.setVisibility(View.VISIBLE);
+//        }
+
 
         db.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
@@ -200,6 +210,7 @@ public class DeliveryPartnerHomePage extends AppCompatActivity implements Naviga
                     mRecyclerView.setVisibility(View.VISIBLE);
                     noDeliveryPartnerText.setVisibility(View.GONE);
                 }
+
 
                 mRecyclerView.setLayoutManager(mLayoutManager);
                 mRecyclerView.setAdapter(mAdapter);

@@ -10,6 +10,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.ImageButton;
+import android.widget.TextView;
 
 import com.developer.fooddeliveryapp.Delivery.DeliveryHomePageAdap.DeliveryHomePageAdapter;
 import com.developer.fooddeliveryapp.Delivery.DeliveryHomePageAdap.DeliveryHomePageModel;
@@ -31,6 +32,7 @@ public class DeliveryPartnerMyOrderPage extends AppCompatActivity {
     private DeliveryHomePageAdapter mAdapter;
     private RecyclerView.LayoutManager mLayoutManager;
     ImageButton btnBack;
+    TextView noOrdersPartnerText;
 
     String mobileNo;
     ArrayList<DeliveryHomePageModel>list=new ArrayList<>();
@@ -42,19 +44,20 @@ public class DeliveryPartnerMyOrderPage extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_delivery_partner_my_order_page);
         btnBack=findViewById(R.id.btn_Back_DeliveryMyOrderPage);
+        noOrdersPartnerText=findViewById(R.id.noOrdersPartnerText);
 
         SessionManager session = new SessionManager(getApplicationContext());
         HashMap<String, String> user = session.getUserDetails();
         mobileNo=user.get("mobileNo").toString();
 
-        createExampleList();
+        createExampleList(mobileNo);
 
         swipeRefreshLayout=findViewById(R.id.swipeContainerDeliveryMyOrders);
         swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
                 swipeRefreshLayout.setRefreshing(false);
-                createExampleList();
+                createExampleList(mobileNo);
             }
         });
 
@@ -66,7 +69,7 @@ public class DeliveryPartnerMyOrderPage extends AppCompatActivity {
         });
     }
 
-    public void createExampleList() {
+    public void createExampleList(String mobileNo) {
         DatabaseReference db = FirebaseDatabase.getInstance().getReference("users").child("DeliveryPartner").child("orders").child("completed").child(mobileNo);
 
         mRecyclerView = findViewById(R.id.recyclerViewMyOrdersDelivery);
@@ -86,21 +89,27 @@ public class DeliveryPartnerMyOrderPage extends AppCompatActivity {
                 mRecyclerView.setLayoutManager(mLayoutManager);
                 mRecyclerView.setAdapter(mAdapter);
 
-                mAdapter.setOnItemClickListener(new DeliveryHomePageAdapter.OnItemClickListener() {
-                    @Override
-                    public void onItemClick(int position) {
-                        DeliveryHomePageModel exampleItemCustomer=list.get(position);
+                if (!list.isEmpty())
+                {
+                    mRecyclerView.setVisibility(View.VISIBLE);
+                    noOrdersPartnerText.setVisibility(View.GONE);
 
-                        ArrayList<DeliveryHomePageModel> arrayList= new ArrayList<>();
-                        arrayList.add(exampleItemCustomer);
-
-                        Intent intent1=new Intent(getApplicationContext(), TrackDeliveryStatus.class);
-
-                        intent1.putExtra("private_list", new Gson().toJson(arrayList));
-
-                        startActivity(intent1);
-                    }
-                });
+                }
+//                mAdapter.setOnItemClickListener(new DeliveryHomePageAdapter.OnItemClickListener() {
+//                    @Override
+//                    public void onItemClick(int position) {
+//                        DeliveryHomePageModel exampleItemCustomer=list.get(position);
+//
+//                        ArrayList<DeliveryHomePageModel> arrayList= new ArrayList<>();
+//                        arrayList.add(exampleItemCustomer);
+//
+//                        Intent intent1=new Intent(getApplicationContext(), TrackDeliveryStatus.class);
+//
+//                        intent1.putExtra("private_list", new Gson().toJson(arrayList));
+//
+//                        startActivity(intent1);
+//                    }
+//                });
             }
 
             @Override

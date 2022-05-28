@@ -1,12 +1,48 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.swiperefreshlayout.widget.SwipeRefreshLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:id="@+id/swipeContainerViewMyDetailedOrdersDelivery"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
     tools:context=".Delivery.TrackDeliveryStatus">
+
+    <androidx.appcompat.widget.Toolbar
+        android:id="@+id/toolbar_delivery"
+        android:layout_width="match_parent"
+        android:layout_height="?attr/actionBarSize"
+        android:background="?attr/colorSecondaryVariant"
+        android:elevation="4dp"
+        android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar"
+        app:popupTheme="@style/ThemeOverlay.AppCompat.Light" >
+
+        <ImageButton
+            android:id="@+id/btnBackTrackDelivery"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            android:layout_marginLeft="10dp"
+            android:layout_marginBottom="5dp"
+            android:gravity="left"
+            android:src="@drawable/ic_back"
+            android:background="@android:color/transparent"
+            app:iconGravity="top"
+            />
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Order Tracker"
+            android:layout_marginLeft="20dp"
+            android:textStyle="bold"
+            android:textSize="22dp"
+            android:textColor="@color/white"/>
+    </androidx.appcompat.widget.Toolbar>
+
+    <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
+        android:id="@+id/swipeContainerViewMyDetailedOrdersDelivery"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        >
 
     <ScrollView
         android:layout_width="match_parent"
@@ -17,20 +53,9 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
             android:orientation="vertical">
 
-            <ImageButton
-                android:id="@+id/btnBackDetailedOrder"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="10dp"
-                android:layout_marginLeft="10dp"
-                android:layout_marginBottom="5dp"
-                android:gravity="left"
-                android:src="@drawable/ic_back_black"
-                android:background="@android:color/transparent"
-                app:iconGravity="top"
-                />
 
             <LinearLayout
                 android:layout_width="match_parent"
@@ -121,7 +146,11 @@
                     android:foregroundGravity="right"
                     android:src="@drawable/delivery_boy" />
             </LinearLayout>
-
+            <LinearLayout
+                android:id="@+id/linearLayoutLocationToRestaurant"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="0.5dp"
@@ -258,7 +287,6 @@
                         />
 
 
-
                 </LinearLayout>
 
 
@@ -295,6 +323,20 @@
                 android:layout_height="wrap_content"
                 android:text="Arrived At Restaurant"
                 />
+        </LinearLayout>
+
+            <TextView
+                android:id="@+id/noteDeliveryPartner"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:visibility="gone"
+                android:text="Note : As you have reached the restaurant wait for the order to be prepared and deliver the order to the customers Location."
+                android:layout_marginTop="5dp"
+                android:layout_marginBottom="5dp"
+                android:textColor="@color/black"
+                android:textSize="15dp"
+                android:textStyle="bold"
+                android:layout_marginLeft="15dp"/>
 
             <TextView
                 android:layout_width="match_parent"
@@ -463,9 +505,22 @@
                 android:layout_height="wrap_content"
                 android:text="Order Delivered"
                 />
+
+            <TextView
+                android:id="@+id/noteDeliveryPartnerDelivered"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Note : As soon as you deliver the order and press the delivered button your order will be assigned to complete and your payment will be processed"
+                android:layout_marginTop="5dp"
+                android:visibility="gone"
+                android:layout_marginBottom="5dp"
+                android:textColor="@color/black"
+                android:textSize="15dp"
+                android:textStyle="bold"
+                android:layout_marginLeft="15dp"/>
         </LinearLayout>
+
     </ScrollView>
-
-</androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
-
+    </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
+</LinearLayout>
 

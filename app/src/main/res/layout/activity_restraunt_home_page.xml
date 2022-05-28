@@ -63,20 +63,22 @@
             <!--            android:text="insert"-->
             <!--            />-->
 
-
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:orientation="vertical">
-
-            </LinearLayout>
-
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textStyle="bold"
+                android:text="Menu Items"
+                android:layout_marginLeft="15dp"
+                android:textSize="20dp"
+                android:layout_marginTop="10dp"
+                android:layout_marginBottom="5dp"/>
 
             <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/recyclerView"
                 android:layout_width="match_parent"
                 android:layout_marginLeft="10dp"
                 android:layout_marginRight="10dp"
+                android:layout_marginBottom="10dp"
                 android:layout_height="wrap_content"
                 android:background="@android:color/white"
                 android:padding="4dp"
