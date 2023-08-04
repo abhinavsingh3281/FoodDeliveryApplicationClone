@@ -64,16 +64,16 @@ bash
 ## Screenshots
 
 - Customer Flow
-  
-![Customer Flow](https://github.com/abhinavsingh3281/FoodDeliveryApplication/assets/52294538/00ce1730-6d27-4060-82ba-97d8de05af2d)
+
+![Customer Flow)](https://github.com/abhinavsingh3281/FoodDeliveryApplicationClone/assets/52294538/4359d196-969e-472c-8cef-e4c3b9b51fdb)
 
 - Restaurant Flow
-  
-![Restaurant Flow](https://github.com/abhinavsingh3281/FoodDeliveryApplication/assets/52294538/c19a8bb1-6d5e-46b8-a8cd-edc916512fa6)
+
+![Restaurant Flow](https://github.com/abhinavsingh3281/FoodDeliveryApplicationClone/assets/52294538/bb6e47bb-8fae-4c23-a440-0c122a79f53c)
 
 - Delivery Flow
   
-![(Delivery Flow) (1)](https://github.com/abhinavsingh3281/FoodDeliveryApplication/assets/52294538/c01f1059-3365-4cb0-8ca9-9dcad3ee32c7)
+![Delivery Flow](https://github.com/abhinavsingh3281/FoodDeliveryApplicationClone/assets/52294538/3782aad6-7efd-48da-be52-9db3fbc49226)
 
 
 ## 🚀 About Me
