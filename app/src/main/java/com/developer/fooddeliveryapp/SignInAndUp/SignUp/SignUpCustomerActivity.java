@@ -241,28 +241,10 @@ public class SignUpCustomerActivity extends AppCompatActivity {
 
                         @Override
                         public void onCancelled(@NonNull DatabaseError error) {
+                            Log.e("DatabaseError", "Error: " + error.getMessage());
 
                         }
                     });
-//                } else if (userType.equals("Restaurant")){
-//                   databaseReferenceRestaurant.child(userType).addListenerForSingleValueEvent(new ValueEventListener() {
-//                        @Override
-//                        public void onDataChange(@NonNull DataSnapshot snapshot) {
-//                            writeNewUserRestaurant(strName, strEmail, strMob, strPassword,userType,address,pinCode,encodedImage);
-//                            writeNewUser(strName, strEmail, strMob, strPassword,userType,address,pinCode,encodedImage);
-//                            Register();
-////                            startActivity(new Intent(SignUpActivity.this, SignInActivity.class));
-//                        }
-//
-//                        @Override
-//                        public void onCancelled(@NonNull DatabaseError error) {
-//
-//                        }
-//                    });
-//                }
-//                else {
-//                    Toast.makeText(getApplicationContext(), "No value", Toast.LENGTH_SHORT).show();
-//                }
             }
             else {
                 Toast.makeText(SignUpCustomerActivity.this, "Enter Valid E-Mail Id", Toast.LENGTH_SHORT).show();
